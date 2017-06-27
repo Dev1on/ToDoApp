@@ -57,18 +57,18 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
             ((DBApplication)getApplication()).setWebApplicationAvailable(true);
         } else {
+            ((DBApplication)getApplication()).setWebApplicationAvailable(false);
+
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle("Warning");
             alertDialog.setMessage("WebApplication not available. Locale database will be used!");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    navigateToHome();
                 }
             });
             alertDialog.show();
-
-            ((DBApplication)getApplication()).setWebApplicationAvailable(false);
-            navigateToHome();
         }
     }
 
