@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="todo_text_name">16sp</dimen>
+    <dimen name="todo_text_expiry">12dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="padding_list_row">16dp</dimen>
+    <dimen name="messages_padding_left">72dp</dimen>
+    <dimen name="icon_width_height">40dp</dimen>
+</resources>

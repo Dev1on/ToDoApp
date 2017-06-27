@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDoApp</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">Login</string>
+    <string name="email_error">Ungültige Email!</string>
+    <string name="password_error">Ungültiges Password!</string>
+</resources>
