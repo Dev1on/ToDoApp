@@ -1,6 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.avenger.todoapp.activity.DetailActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/detail_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <TextView
+        android:id="@+id/idText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+
+    <EditText
+        android:id="@+id/nameTextDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+    <EditText
+        android:id="@+id/descriptionTextDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Description" />
+
+    <EditText
+        android:id="@+id/dateText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="date"
+        android:focusable="false" />
+
+    <EditText
+        android:id="@+id/timeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="time"
+        android:focusable="false" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/favouriteBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favourite" />
+
+        <CheckBox
+            android:id="@+id/doneBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/contactText"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="contacts" />
+
+    <EditText
+        android:id="@+id/locationText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Location Name" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
 </LinearLayout>

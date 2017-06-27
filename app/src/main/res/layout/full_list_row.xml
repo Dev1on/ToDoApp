@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_list_row"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_list_row"
+    android:paddingLeft="?listPreferredItemPaddingLeft"
+    android:paddingRight="?listPreferredItemPaddingRight"
+    android:paddingTop="@dimen/padding_list_row">
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/list_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/todo"
+        android:textSize="@dimen/todo_text_name"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/list_dateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_alignRight="@+id/list_name" />
+    <TextView
+        android:id="@+id/list_timeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_alignRight="@+id/list_dateText"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/list_name">
+
+        <CheckBox
+            android:id="@+id/list_favouriteBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favourite" />
+
+        <CheckBox
+            android:id="@+id/list_doneBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done" />
+    </LinearLayout>
+
+
+</RelativeLayout>

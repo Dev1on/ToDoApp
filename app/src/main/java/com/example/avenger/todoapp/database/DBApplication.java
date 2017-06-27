@@ -31,7 +31,6 @@ public class DBApplication extends Application {
             Log.i("DBApplication", "localData exists: " + localTodos[0].size());
             if (localTodos[0].size() > 0) {
                 //TODO if local db has data, then delete all online data and push all local data to remote db
-
             }
         });
     }

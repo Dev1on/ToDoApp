@@ -29,9 +29,9 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         this.webApplicationAvailable = webApplicationAvailable;
 
         db = context.openOrCreateDatabase("mydb.sqlite", Context.MODE_PRIVATE, null);
-        if(db.getVersion() == 0) {
+        if (db.getVersion() == 0) {
             db.setVersion(1);
-            db.execSQL("CREATE TABLE " + DB_NAME + "(ID INTEGER PRIMARY KEY, NAME TEXT, DESCRIPTION TEXT, EXPIRY INTEGER, DONE INTEGER, FAVOURITE INTEGER, LAENGENGRAD INTEGER, BREITENGRAD INTEGER, LOCATIONNAME TEXT)");
+            db.execSQL("CREATE TABLE " + DB_NAME + " (ID INTEGER PRIMARY KEY, NAME TEXT, DESCRIPTION TEXT, EXPIRY INTEGER, DONE INTEGER, FAVOURITE INTEGER, LAENGENGRAD INTEGER, BREITENGRAD INTEGER, LOCATIONNAME TEXT)");
             db.execSQL("CREATE TABLE CONTACTS (ID INTEGER PRIMARY KEY, NAME TEXT, NUMBER TEXT)");
             db.execSQL("CREATE TABLE TODOSCONTACTS (TODOID INTEGER REFERENCES TODOS(ID), CONTACTID INTEGER REFERENCES CONTACTS(ID), PRIMARY KEY(TODOSID, CONTACTID))");
         }
@@ -213,7 +213,7 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         values.put("DONE", todo.isDone());
         values.put("FAVOURITE", todo.isFavourite());
         values.put("LAENGENGRAD", todo.getLocation().getLatlng().getLat());
-        values.put("BREITENBGRAD", todo.getLocation().getLatlng().getLng());
+        values.put("BREITENGRAD", todo.getLocation().getLatlng().getLng());
         values.put("LOCATIONNAME", todo.getLocation().getName());
 
         // TODO add contacts to db
