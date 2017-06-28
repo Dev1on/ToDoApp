@@ -3,6 +3,7 @@ package com.example.avenger.todoapp.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import org.w3c.dom.Text;
 
 public class FullListAdapter extends RecyclerView.Adapter<FullListAdapter.ViewHolder> {
 
-    private Todo[] todos;
+    private Todo[] todos = new Todo[]{};
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -50,7 +51,8 @@ public class FullListAdapter extends RecyclerView.Adapter<FullListAdapter.ViewHo
     }
 
     public FullListAdapter(Todo[] todos) {
-        this.todos = todos;
+        this.todos = new Todo[todos.length];
+        System.arraycopy(todos, 0, this.todos, 0, todos.length);
     }
 
     @Override
@@ -62,6 +64,9 @@ public class FullListAdapter extends RecyclerView.Adapter<FullListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(FullListAdapter.ViewHolder holder, int position) {
+
+        Log.i("todos in onBindViewHold", "" + todos.length);
+
         Todo todo = todos[position];
 
         holder.id = todo.getId();

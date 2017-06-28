@@ -8,7 +8,7 @@ public interface FullListView {
 
     void toggleFavourite();
 
-    void setToDos(Todo[] todos);
+    void initializeView(Todo[] todos);
 
     void displayTodosNotFound();
 

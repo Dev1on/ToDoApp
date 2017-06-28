@@ -24,7 +24,6 @@ import com.example.avenger.todoapp.view.FullListView;
 
 public class FullListActivity extends AppCompatActivity implements FullListView {
 
-    private Todo[] todos = new Todo[]{};
     private FullListPresenter presenter;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -51,15 +50,6 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
         presenter = new FullListPresenter(this, (DBApplication)getApplication());
         presenter.readAllToDos();
-
-        Log.i("todos", todos.toString());
-        adapter = new FullListAdapter(todos);
-
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_todo_list);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        recyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(recyclerViewLayoutManager);
-        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -73,9 +63,13 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     }
 
     @Override
-    public void setToDos(Todo[] todos) {
-        this.todos = new Todo[todos.length];
-        System.arraycopy(todos, 0, this.todos, 0, todos.length);
+    public void initializeView(Todo[] todos) {
+        adapter = new FullListAdapter(todos);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_todo_list);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(recyclerViewLayoutManager);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
