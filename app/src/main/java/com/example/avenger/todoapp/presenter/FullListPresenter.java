@@ -7,12 +7,15 @@ import com.example.avenger.todoapp.database.ICRUDOperationsAsync;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.view.FullListView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class FullListPresenter {
 
     private FullListView fullListView;
     private ICRUDOperationsAsync crudOperations;
-    private Todo[] todos;
+    private List<Todo> todos = new ArrayList<>();
 
     public FullListPresenter(FullListView fullListView, DBApplication application) {
         this.fullListView = fullListView;
@@ -25,16 +28,16 @@ public class FullListPresenter {
             if(result.size() == 0) {
                 fullListView.displayTodosNotFound();
             } else {
-                Todo[] todos = new Todo[result.size()];
-                result.toArray(todos); // fill the array
+                List<Todo> todos = new ArrayList<Todo>();
+                todos.addAll(result);
                 setTodos(todos);
                 fullListView.initializeView(todos);
             }
         });
     }
 
-    public void setTodos(Todo[] todos) {
-        this.todos = todos;
+    public void setTodos(List<Todo> todos) {
+        this.todos.addAll(todos);
     }
 
     public void onDestroy() {

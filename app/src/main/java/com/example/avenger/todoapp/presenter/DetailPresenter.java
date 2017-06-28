@@ -1,7 +1,10 @@
 package com.example.avenger.todoapp.presenter;
 
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.example.avenger.todoapp.R;
+import com.example.avenger.todoapp.adapter.FullListAdapter;
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.database.ICRUDOperationsAsync;
 import com.example.avenger.todoapp.model.Todo;
