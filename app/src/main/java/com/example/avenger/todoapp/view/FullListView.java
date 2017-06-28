@@ -1,16 +1,14 @@
 package com.example.avenger.todoapp.view;
 
+import com.example.avenger.todoapp.model.Todo;
+
 public interface FullListView {
-
-    void showDetails();
-
-    void createItem();
 
     void toggleDone();
 
     void toggleFavourite();
 
-    void setToDos();
+    void setToDos(Todo[] todos);
 
     void displayTodosNotFound();
 

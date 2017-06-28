@@ -1,8 +1,15 @@
 package com.example.avenger.todoapp.view;
 
-/**
- * Created by Avenger on 27.06.17.
- */
+import com.example.avenger.todoapp.model.Todo;
 
 public interface DetailView {
+        void saveItem();
+
+        void deleteItem();
+
+        void setTodo(Todo todo);
+
+        Todo getCurrentTodo();
+
+        void displayTodoNotFound();
 }
