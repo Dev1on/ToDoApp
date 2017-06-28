@@ -17,7 +17,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <TextView
-        android:id="@+id/idText"
+        android:id="@+id/idTextDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />
@@ -40,7 +40,7 @@
         android:text="Description" />
 
     <EditText
-        android:id="@+id/dateText"
+        android:id="@+id/dateTextDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -48,7 +48,7 @@
         android:focusable="false" />
 
     <EditText
-        android:id="@+id/timeText"
+        android:id="@+id/timeTextDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -61,20 +61,20 @@
         android:orientation="horizontal">
 
         <CheckBox
-            android:id="@+id/favouriteBox"
+            android:id="@+id/favouriteBoxDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Favourite" />
 
         <CheckBox
-            android:id="@+id/doneBox"
+            android:id="@+id/doneBoxDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Done" />
     </LinearLayout>
 
     <EditText
-        android:id="@+id/contactText"
+        android:id="@+id/contactTextDetail"
         android:layout_width="match_parent"
         android:layout_height="39dp"
         android:ems="10"
@@ -82,7 +82,7 @@
         android:text="contacts" />
 
     <EditText
-        android:id="@+id/locationText"
+        android:id="@+id/locationTextDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -90,7 +90,7 @@
         android:text="Location Name" />
 
     <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
+        android:id="@+id/mapViewDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible" />
