@@ -5,8 +5,6 @@ import com.example.avenger.todoapp.database.ICRUDOperationsAsync;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.view.FullListView;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class FullListPresenter {
 
@@ -25,8 +23,10 @@ public class FullListPresenter {
             if(result.size() == 0) {
                 fullListView.displayTodosNotFound();
             } else {
-                setTodos(result);
-                fullListView.setToDos(result);
+                Todo[] todos = new Todo[result.size()];
+                result.toArray(todos); // fill the array
+                setTodos(todos);
+                fullListView.setToDos(todos);
             }
         });
     }
