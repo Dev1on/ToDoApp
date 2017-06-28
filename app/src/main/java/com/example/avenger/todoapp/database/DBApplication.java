@@ -24,12 +24,13 @@ public class DBApplication extends Application {
         // /(un)comment for local test data
         createLocalTestData(crudOperations);
 
-        final List<Todo>[] localTodos = new List[]{new ArrayList<>()};
+        final List<Todo> localTodos = new ArrayList<>();
         crudOperations.readAllToDos(result -> {
             Log.i("DBAP", "Result is: " + result.size());
-            localTodos[0].addAll(result);
-            Log.i("DBApplication", "localData exists: " + localTodos[0].size());
-            if (localTodos[0].size() > 0) {
+            localTodos.addAll(result);
+
+            Log.i("DBApplication", "localData exists: " + localTodos.size());
+            if (localTodos.size() > 0) {
                 //TODO if local db has data, then delete all online data and push all local data to remote db
             }
         });
