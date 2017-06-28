@@ -39,7 +39,7 @@ public class DetailPresenter {
         crudOperations.readToDo(id, result -> {
             Log.d("DetailPresenter", "Result is: " + result);
 
-            if(result.getId() == 0) {
+            if(null == result || result.getId() == 0) {
                 detailView.displayTodoNotFound();
             } else {
                 setTodo(result);

@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.avenger.todoapp.R.color.todo;
+
 public class DBCRUDOperations implements ICRUDOperationsAsync {
 
     protected static String logger = DBCRUDOperations.class.getSimpleName();
@@ -135,13 +137,14 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
                 ContentValues values = setContentValuesForTodo(todo);
                 int rowsAffected = db.update(DB_NAME, values, "ID=?", new String[]{String.valueOf(id)});
                 if (rowsAffected > 0) {
-                    try {
-                        remoteDBCRUDOperations.getWebAPI().updateToDoItem(todo.getId(), todo).execute().body();
-                    } catch (IOException e) {
-                        Log.d(logger, "Could not update item with id: " + id);
-                        e.printStackTrace();
+                    if(webApplicationAvailable) {
+                        try {
+                            remoteDBCRUDOperations.getWebAPI().updateToDoItem(todo.getId(), todo).execute().body();
+                        } catch (IOException e) {
+                            Log.d(logger, "Could not update item with id: " + id);
+                            e.printStackTrace();
+                        }
                     }
-
                     return todo;
                 }
                 return null;
@@ -160,14 +163,14 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
             @Override
             protected Boolean doInBackground(Long... params) {
                 int rowsAffected = db.delete(DB_NAME, "ID=?", new String[]{String.valueOf(id)});
-
-                try {
-                    remoteDBCRUDOperations.getWebAPI().deleteToDoItem(id).execute().body();
-                } catch (IOException e) {
-                    Log.d(logger, "Could not delete item with id: " + id);
-                    e.printStackTrace();
+                if(webApplicationAvailable) {
+                    try {
+                        remoteDBCRUDOperations.getWebAPI().deleteToDoItem(id).execute().body();
+                    } catch (IOException e) {
+                        Log.d(logger, "Could not delete item with id: " + id);
+                        e.printStackTrace();
+                    }
                 }
-
                 return rowsAffected > 0;
             }
 
