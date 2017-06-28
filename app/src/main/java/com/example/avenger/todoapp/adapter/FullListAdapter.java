@@ -16,10 +16,6 @@ import com.example.avenger.todoapp.model.Todo;
 
 import org.w3c.dom.Text;
 
-/**
- * Created by Avenger on 27.06.17.
- */
-
 public class FullListAdapter extends RecyclerView.Adapter<FullListAdapter.ViewHolder> {
 
     private Todo[] todos;

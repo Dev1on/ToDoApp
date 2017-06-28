@@ -10,11 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.avenger.todoapp.R;
 import com.example.avenger.todoapp.adapter.FullListAdapter;
+import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.helper.DividerItemDecoration;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.presenter.FullListPresenter;
@@ -22,7 +24,7 @@ import com.example.avenger.todoapp.view.FullListView;
 
 public class FullListActivity extends AppCompatActivity implements FullListView {
 
-    private Todo[] todos;
+    private Todo[] todos = new Todo[]{};
     private FullListPresenter presenter;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -47,15 +49,17 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
             }
         });
 
+        presenter = new FullListPresenter(this, (DBApplication)getApplication());
+        presenter.readAllToDos();
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        Log.i("todos", todos.toString());
         adapter = new FullListAdapter(todos);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_todo_list);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         recyclerView.setAdapter(adapter);
-
-        presenter = new FullListPresenter(this);
     }
 
     @Override
@@ -70,7 +74,8 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
     @Override
     public void setToDos(Todo[] todos) {
-        this.todos = todos;
+        this.todos = new Todo[todos.length];
+        System.arraycopy(todos, 0, this.todos, 0, todos.length);
     }
 
     @Override

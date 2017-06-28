@@ -1,5 +1,7 @@
 package com.example.avenger.todoapp.presenter;
 
+import android.util.Log;
+
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.database.ICRUDOperationsAsync;
 import com.example.avenger.todoapp.model.Todo;
@@ -23,6 +25,7 @@ public class FullListPresenter {
             if(result.size() == 0) {
                 fullListView.displayTodosNotFound();
             } else {
+                Log.i("TODOS found", "test");
                 Todo[] todos = new Todo[result.size()];
                 result.toArray(todos); // fill the array
                 setTodos(todos);
