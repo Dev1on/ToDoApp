@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,10 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.avenger.todoapp.R;
+import com.example.avenger.todoapp.adapter.FullListAdapter;
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.presenter.DetailPresenter;
 import com.example.avenger.todoapp.view.DetailView;
+import com.example.avenger.todoapp.view.FullListView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -51,13 +54,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     private EditText dateText;
     private EditText timeText;
 
-
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
     private AlertDialog.Builder alertDialogBuilder;
 
     private boolean createItem = false;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +68,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         presenter = new DetailPresenter(this, ((DBApplication)getApplication()));
         progressDialog = new ProgressDialog(this);
         toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-
 
         idText = (TextView) findViewById(R.id.idTextDetail);
         nameText = (EditText) findViewById(R.id.nameTextDetail);

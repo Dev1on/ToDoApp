@@ -17,9 +17,13 @@ import com.example.avenger.todoapp.model.Todo;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class FullListAdapter extends RecyclerView.Adapter<FullListAdapter.ViewHolder> {
 
-    private Todo[] todos = new Todo[]{};
+    private ArrayList<Todo> todos = new ArrayList<>();
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -50,9 +54,8 @@ public class FullListAdapter extends RecyclerView.Adapter<FullListAdapter.ViewHo
         }
     }
 
-    public FullListAdapter(Todo[] todos) {
-        this.todos = new Todo[todos.length];
-        System.arraycopy(todos, 0, this.todos, 0, todos.length);
+    public FullListAdapter(List<Todo> todos) {
+        this.todos.addAll(todos);
     }
 
     @Override
@@ -64,10 +67,7 @@ public class FullListAdapter extends RecyclerView.Adapter<FullListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(FullListAdapter.ViewHolder holder, int position) {
-
-        Log.i("todos in onBindViewHold", "" + todos.length);
-
-        Todo todo = todos[position];
+        Todo todo = todos.get(position);
 
         holder.id = todo.getId();
         holder.name.setText(todo.getName());
@@ -77,8 +77,27 @@ public class FullListAdapter extends RecyclerView.Adapter<FullListAdapter.ViewHo
         holder.favourite.setChecked(todo.isFavourite());
     }
 
+    public void addTodo(Todo todo) {
+        todos.add(todo);
+        notifyItemInserted(todos.size());
+    }
+
+    public void updateData(List<Todo> todos) {
+        todos.clear();
+        todos.addAll(todos);
+
+        notifyDataSetChanged();
+    }
+
+    public void deleteTodo(Todo todo) {
+        int index = todos.indexOf(todo);
+        todos.remove(todo);
+
+        notifyItemRemoved(index);
+    }
+
     @Override
     public int getItemCount() {
-        return todos.length;
+        return todos.size();
     }
 }
