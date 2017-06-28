@@ -85,19 +85,6 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
         adapter = new FullListAdapter(this, R.layout.full_list_row, presenter.getTodos());
         ((ListView)listView).setAdapter(adapter);
         adapter.setNotifyOnChange(true);
-
-        Log.i("beforeOnClick","");
-        ((ListView) listView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("itemclicke" , "das");
-                Context context = view.getContext();
-                Intent showTodoDetails = new Intent(context, DetailActivity.class);
-                showTodoDetails.putExtra("id", adapter.getItem(position).getId());
-                showTodoDetails.putExtra("createItem", false);
-                context.startActivity(showTodoDetails);
-            }
-        });
         Log.i("count adapter", "" + adapter.getCount());
     }
 

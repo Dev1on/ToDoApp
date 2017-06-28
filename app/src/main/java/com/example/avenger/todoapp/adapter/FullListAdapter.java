@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.avenger.todoapp.R;
+import com.example.avenger.todoapp.activity.DetailActivity;
 import com.example.avenger.todoapp.model.Todo;
 
 
@@ -39,13 +40,27 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         Log.i("todos in adapter", "" + todos.size());
     }
 
-    public static class ViewHolder {
+    public static class ViewHolder implements View.OnClickListener {
+
         public long id;
         public TextView name;
         public CheckBox done;
         public CheckBox favourite;
         public TextView date;
         public TextView time;
+
+        public ViewHolder(View view) {
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Context context = v.getContext();
+            Intent showTodoDetails = new Intent(context, DetailActivity.class);
+            showTodoDetails.putExtra("id", id);
+            showTodoDetails.putExtra("createItem", false);
+            context.startActivity(showTodoDetails);
+        }
     }
 
     @NonNull
@@ -65,7 +80,7 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
             CheckBox done = (CheckBox) view.findViewById(R.id.list_doneBox);
             CheckBox favourite = (CheckBox) view.findViewById(R.id.list_favouriteBox);
 
-            ViewHolder viewHolder = new ViewHolder();
+            ViewHolder viewHolder = new ViewHolder(view);
             viewHolder.name = name;
             viewHolder.date = date;
             viewHolder.time = time;
@@ -82,6 +97,7 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         DateFormat timeFormatter = new SimpleDateFormat(HH_MM);
         long dbTime = todo.getExpiry();
 
+        viewHolder.id = todo.getId();
         viewHolder.name.setText(todo.getName());
         viewHolder.date.setText(fullDateFormatter.format(dbTime));
         viewHolder.time.setText(timeFormatter.format(dbTime));
