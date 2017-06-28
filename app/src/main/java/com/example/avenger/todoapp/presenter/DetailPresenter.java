@@ -1,11 +1,17 @@
 package com.example.avenger.todoapp.presenter;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 
+import com.example.avenger.todoapp.R;
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.database.ICRUDOperationsAsync;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.view.DetailView;
+
+import static com.example.avenger.todoapp.R.string.email;
 
 public class DetailPresenter {
 
@@ -28,6 +34,8 @@ public class DetailPresenter {
 
     public void saveItem() {
         Todo newTodo = detailView.getCurrentTodo();
+
+
 
         crudOperations.updateToDo(todo.getId(), newTodo, result -> {
             setTodo(result);

@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -29,6 +31,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import static com.example.avenger.todoapp.R.string.email;
 
 public class DetailActivity extends AppCompatActivity implements DetailView {
 
@@ -51,6 +55,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
     private AlertDialog.Builder alertDialogBuilder;
+
+    private boolean createItem = false;
 
 
     @Override
@@ -77,7 +83,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         setCalendar();
         setDeleteAlert();
 
-        boolean createItem = (boolean) getIntent().getSerializableExtra("createItem");
+        createItem = (boolean) getIntent().getSerializableExtra("createItem");
 
         if (createItem)
             initializeEmpty();
@@ -87,12 +93,12 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
     @Override
     public void saveItem() {
-        boolean createItem = (boolean) getIntent().getSerializableExtra("createItem");
         if (!createItem) {
             progressDialog.show();
             presenter.saveItem();
         } else {
             presenter.createItem();
+            createItem = false;
         }
 
         progressDialog.dismiss();
@@ -106,9 +112,10 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         Toast.makeText(this, "Todo deleted", Toast.LENGTH_SHORT).show();
 
         Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_OK, returnIntent);
+        setResult(RESULT_OK, returnIntent);
         finish();
     }
+
 
     @Override
     public void setTodo(Todo todo) {
@@ -121,8 +128,10 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         long dbTime = todo.getExpiry();
         String showDate = fullDateFormatter.format(dbTime);
         String showTime = timeFormatter.format(dbTime);
-        dateText.setText(showDate);
-        timeText.setText(showTime);
+        if (todo.getExpiry() > 0) {
+            dateText.setText(showDate);
+            timeText.setText(showTime);
+        }
 
         favouriteBox.setChecked(todo.isFavourite());
         doneBox.setChecked(todo.isDone());
@@ -194,6 +203,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             alertDialogBuilder.show();
             return true;
         } else if(item.getItemId() == R.id.action_save) {
+            checkMandatory();
             saveItem();
             return true;
         } else {
@@ -266,6 +276,25 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         alertDialogBuilder = new AlertDialog.Builder(DetailActivity.this);
         alertDialogBuilder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener);
+    }
+
+    private void checkMandatory() {
+        String nameValue = nameText.getText().toString();
+        String dateValue = dateText.getText().toString();
+        String timeValue = timeText.getText().toString();
+
+        if(TextUtils.isEmpty(nameValue)) {
+            nameText.setError("Please enter a name.");
+            findViewById(R.id.action_save).setEnabled(false);
+        } else if (TextUtils.isEmpty(dateValue)) {
+            dateText.setError("Please select a date.");
+            findViewById(R.id.action_save).setEnabled(false);
+        } else if (TextUtils.isEmpty(timeValue)) {
+            timeText.setError("Please select a time.");
+            findViewById(R.id.action_save).setEnabled(false);
+        } else {
+            findViewById(R.id.action_save).setEnabled(true);
+        }
     }
 
 }
