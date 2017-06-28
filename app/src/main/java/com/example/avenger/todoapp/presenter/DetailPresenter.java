@@ -29,8 +29,6 @@ public class DetailPresenter {
     public void saveItem() {
         Todo newTodo = detailView.getCurrentTodo();
 
-
-
         crudOperations.updateToDo(todo.getId(), newTodo, result -> {
             setTodo(result);
             detailView.setTodo(result);

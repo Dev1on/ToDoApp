@@ -10,10 +10,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -22,20 +22,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.avenger.todoapp.R;
-import com.example.avenger.todoapp.adapter.FullListAdapter;
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.presenter.DetailPresenter;
 import com.example.avenger.todoapp.view.DetailView;
-import com.example.avenger.todoapp.view.FullListView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import static com.example.avenger.todoapp.R.string.email;
 
 public class DetailActivity extends AppCompatActivity implements DetailView {
 
@@ -89,20 +85,23 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             initializeEmpty();
         else
             initializeScreenWithTodo();
+
     }
 
     @Override
     public void saveItem() {
-        if (!createItem) {
-            progressDialog.show();
-            presenter.saveItem();
-        } else {
-            presenter.createItem();
-            createItem = false;
-        }
+        if (isMandatoryMaintained()) {
+            if (!createItem) {
+                progressDialog.show();
+                presenter.saveItem();
+            } else {
+                presenter.createItem();
+                createItem = false;
+            }
 
-        progressDialog.dismiss();
-        Toast.makeText(this, "Todo saved", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+            Toast.makeText(this, "Todo saved", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -203,7 +202,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             alertDialogBuilder.show();
             return true;
         } else if(item.getItemId() == R.id.action_save) {
-            checkMandatory();
             saveItem();
             return true;
         } else {
@@ -254,11 +252,13 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     private void updateDateLabel(Calendar cal) {
         SimpleDateFormat sdf = new SimpleDateFormat(DD_MM_YYYY);
         dateText.setText(sdf.format(cal.getTime()));
+        dateText.setError(null);
     }
 
     private void updateTimeLabel(Calendar cal) {
         SimpleDateFormat sdf = new SimpleDateFormat(HH_MM);
         timeText.setText(sdf.format(cal.getTime()));
+        timeText.setError(null);
     }
 
     private void setDeleteAlert() {
@@ -278,23 +278,28 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
                 .setNegativeButton("No", dialogClickListener);
     }
 
-    private void checkMandatory() {
-        String nameValue = nameText.getText().toString();
-        String dateValue = dateText.getText().toString();
-        String timeValue = timeText.getText().toString();
-
-        if(TextUtils.isEmpty(nameValue)) {
-            nameText.setError("Please enter a name.");
-            findViewById(R.id.action_save).setEnabled(false);
-        } else if (TextUtils.isEmpty(dateValue)) {
-            dateText.setError("Please select a date.");
-            findViewById(R.id.action_save).setEnabled(false);
-        } else if (TextUtils.isEmpty(timeValue)) {
-            timeText.setError("Please select a time.");
-            findViewById(R.id.action_save).setEnabled(false);
+    private boolean isMandatoryMaintained() {
+        if (TextUtils.isEmpty(nameText.getText().toString()) ||
+                TextUtils.isEmpty(dateText.getText().toString()) ||
+                TextUtils.isEmpty(timeText.getText().toString())) {
+            if( nameText.getText().toString().trim().equals("")) {
+                nameText.setError("Name is required!");
+                nameText.setHint("please enter username");
+            }
+            if(dateText.getText().toString().trim().equals("")) {
+                dateText.setError("Date is required!");
+                dateText.setHint("please enter a date");
+            }
+            if(timeText.getText().toString().trim().equals("")) {
+                timeText.setError("Date is required!");
+                timeText.setHint("please enter a time");
+            }
+            return false;
         } else {
-            findViewById(R.id.action_save).setEnabled(true);
+            return true;
         }
+
     }
+
 
 }
