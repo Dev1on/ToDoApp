@@ -2,6 +2,7 @@ package com.example.avenger.todoapp.view;
 
 import com.example.avenger.todoapp.model.Todo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface FullListView {
@@ -10,7 +11,7 @@ public interface FullListView {
 
     void toggleFavourite();
 
-    void initializeView(List<Todo> todos);
+    void initializeView(ArrayList<Todo> todos);
 
     void displayTodosNotFound();
 

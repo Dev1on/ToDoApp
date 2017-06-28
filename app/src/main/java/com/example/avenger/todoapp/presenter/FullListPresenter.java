@@ -15,7 +15,7 @@ public class FullListPresenter {
 
     private FullListView fullListView;
     private ICRUDOperationsAsync crudOperations;
-    private List<Todo> todos = new ArrayList<>();
+    private ArrayList<Todo> todos = new ArrayList<>();
 
     public FullListPresenter(FullListView fullListView, DBApplication application) {
         this.fullListView = fullListView;
@@ -28,9 +28,10 @@ public class FullListPresenter {
             if(result.size() == 0) {
                 fullListView.displayTodosNotFound();
             } else {
-                List<Todo> todos = new ArrayList<Todo>();
+                ArrayList<Todo> todos = new ArrayList<Todo>();
                 todos.addAll(result);
                 setTodos(todos);
+                Log.i("afterReadAllTodoBefInit", ".");
                 fullListView.initializeView(todos);
             }
         });
@@ -38,6 +39,10 @@ public class FullListPresenter {
 
     public void setTodos(List<Todo> todos) {
         this.todos.addAll(todos);
+    }
+
+    public ArrayList<Todo> getTodos() {
+        return todos;
     }
 
     public void onDestroy() {
