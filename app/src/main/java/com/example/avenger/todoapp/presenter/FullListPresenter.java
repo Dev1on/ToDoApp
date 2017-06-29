@@ -14,7 +14,7 @@ import java.util.List;
 public class FullListPresenter {
 
     private FullListView fullListView;
-    private ICRUDOperationsAsync crudOperations;
+    private static ICRUDOperationsAsync crudOperations;
     private ArrayList<Todo> todos = new ArrayList<>();
 
     public FullListPresenter(FullListView fullListView, DBApplication application) {
@@ -34,6 +34,12 @@ public class FullListPresenter {
                 Log.i("afterReadAllTodoBefInit", ".");
                 fullListView.initializeView(todos);
             }
+        });
+    }
+
+    public void updateTodo(Todo todo) {
+        crudOperations.updateToDo(todo.getId(), todo, result -> {
+            readAllToDos();
         });
     }
 

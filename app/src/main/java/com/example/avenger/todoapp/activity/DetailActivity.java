@@ -11,9 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -85,7 +83,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             initializeEmpty();
         else
             initializeScreenWithTodo();
-
     }
 
     @Override
@@ -114,9 +111,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         setResult(RESULT_OK, returnIntent);
         finish();
     }
-
-
-
 
     @Override
     public void setTodo(Todo todo) {
@@ -171,7 +165,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         location.setLatlng(latlng);
         location.setName(location_name);
         //TODO save contacts
-
 
         Todo returnTodo = new Todo(name, description);
         returnTodo.setId(id);
@@ -276,7 +269,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
                 case DialogInterface.BUTTON_POSITIVE:
                     deleteItem();
                     break;
-
                 case DialogInterface.BUTTON_NEGATIVE:
                     //Do nothing
                     break;
@@ -291,15 +283,15 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         if (TextUtils.isEmpty(nameText.getText().toString()) ||
                 TextUtils.isEmpty(dateText.getText().toString()) ||
                 TextUtils.isEmpty(timeText.getText().toString())) {
-            if( nameText.getText().toString().trim().equals("")) {
+            if (nameText.getText().toString().trim().equals("")) {
                 nameText.setError("Name is required!");
                 nameText.setHint("please enter a name");
             }
-            if(dateText.getText().toString().trim().equals("")) {
+            if (dateText.getText().toString().trim().equals("")) {
                 dateText.setError("Date is required!");
                 dateText.setHint("please enter a date");
             }
-            if(timeText.getText().toString().trim().equals("")) {
+            if (timeText.getText().toString().trim().equals("")) {
                 timeText.setError("Date is required!");
                 timeText.setHint("please enter a time");
             }
@@ -309,6 +301,4 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         }
 
     }
-
-
 }

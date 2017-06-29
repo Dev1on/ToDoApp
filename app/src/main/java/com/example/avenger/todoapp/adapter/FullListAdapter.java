@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.avenger.todoapp.R;
@@ -85,6 +86,22 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
             @Override
             public void onClick(View v) {
                 fullListView.startDetail(v, viewHolder.id);
+            }
+        });
+
+        viewHolder.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                todo.setDone(isChecked);
+                fullListView.toggleDone(todo);
+            }
+        });
+
+        viewHolder.favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                todo.setFavourite(isChecked);
+                fullListView.toggleFavourite(todo);
             }
         });
 

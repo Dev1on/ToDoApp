@@ -68,13 +68,14 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     }
 
     @Override
-    public void toggleDone() {
+    public void toggleDone(Todo todo) {
+        presenter.updateTodo(todo);
 
     }
 
     @Override
-    public void toggleFavourite() {
-
+    public void toggleFavourite(Todo todo) {
+        presenter.updateTodo(todo);
     }
 
     @Override

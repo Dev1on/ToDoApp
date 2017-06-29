@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface FullListView {
 
-    void toggleDone();
+    void toggleDone(Todo todo);
 
-    void toggleFavourite();
+    void toggleFavourite(Todo todo);
 
     void initializeView(ArrayList<Todo> todos);
 
