@@ -66,14 +66,15 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
     @Override
     public void initializeView(ArrayList<Todo> todos) {
-        adapter = new FullListAdapter(this, R.layout.full_list_row, presenter.getTodos(), this);
+        todos.sort(Todo.doneComparator);
+        adapter = new FullListAdapter(this, R.layout.full_list_row, todos, this);
         ((ListView)listView).setAdapter(adapter);
     }
 
     public void updateView(ArrayList<Todo> todos) {
         adapter.clear();
+        todos.sort(Todo.doneComparator);
         ((FullListAdapter)adapter).setTodos(todos);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -89,7 +90,20 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        presenter.readAllToDosForChanges();
+        String operation = data.getStringExtra("operation");
+        long todoID = data.getLongExtra("todoID", 0);
+
+        switch (operation) {
+            case "create":
+                presenter.readAllToDosForChanges();
+                break;
+            case "update":
+                presenter.updateTodoWithIDInList(todoID);
+                break;
+            case "delete":
+                presenter.removeTodoWithIDFromList(todoID);
+                break;
+        }
     }
 
     @Override

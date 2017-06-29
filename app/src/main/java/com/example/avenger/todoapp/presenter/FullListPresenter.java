@@ -50,6 +50,30 @@ public class FullListPresenter {
         });
     }
 
+    public void updateTodoWithIDInList(long id) {
+        crudOperations.readToDo(id, result -> {
+            for(Todo todoInList : getTodos()) {
+                if(todoInList.getId() == result.getId()) {
+                    int index = getTodos().indexOf(todoInList);
+                    getTodos().set(index, result);
+                    fullListView.updateView(todos);
+                    return;
+                }
+            }
+        });
+    }
+
+    public void removeTodoWithIDFromList(long id) {
+        for(Todo todoInList : getTodos()) {
+            if(todoInList.getId() == id) {
+                int index = getTodos().indexOf(todoInList);
+                getTodos().remove(index);
+                fullListView.updateView(todos);
+                return;
+            }
+        }
+    }
+
     public void setTodos(List<Todo> todos) {
         this.todos.clear();
         this.todos.addAll(todos);

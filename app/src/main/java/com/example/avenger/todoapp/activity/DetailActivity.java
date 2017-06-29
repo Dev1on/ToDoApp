@@ -88,19 +88,28 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @Override
     public void saveItem() {
         if (isMandatoryMaintained()) {
+            String operation = "";
+
             if (!createItem) {
                 progressDialog.show();
                 presenter.saveItem();
+                operation = "update";
             } else {
                 presenter.createItem();
+                operation = "create";
                 createItem = false;
             }
 
             progressDialog.dismiss();
             Toast.makeText(this, "Todo saved", Toast.LENGTH_SHORT).show();
 
+
             Intent returnIntent = getIntent();
             setResult(RESULT_OK, returnIntent);
+            returnIntent.putExtra("operation", operation);
+            if(TextUtils.equals(operation, "update")) {
+                returnIntent.putExtra("todoID", getCurrentTodo().getId());
+            }
             finish();
         }
     }
@@ -112,6 +121,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         Toast.makeText(this, "Todo deleted", Toast.LENGTH_SHORT).show();
 
         Intent returnIntent = getIntent();
+        returnIntent.putExtra("operation", "delete");
+        returnIntent.putExtra("todoID", getCurrentTodo().getId());
         setResult(RESULT_OK, returnIntent);
         finish();
     }
