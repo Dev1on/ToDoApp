@@ -1,10 +1,7 @@
 package com.example.avenger.todoapp.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +14,6 @@ import com.example.avenger.todoapp.R;
 import com.example.avenger.todoapp.activity.DetailActivity;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.view.FullListView;
-
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,7 +35,7 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         this.fullListView = fullListView;
     }
 
-    public static class ViewHolder implements View.OnClickListener {
+    public static class ViewHolder {
 
         public long id;
         public TextView name;
@@ -49,47 +43,36 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         public CheckBox favourite;
         public TextView date;
         public TextView time;
-
-        public ViewHolder(View view) {
-            view.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            fullListView.startDetail(v, this.id);
-        }
     }
 
-    @NonNull
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         Log.i("getView", "called");
-        if (view != null) {
-            Log.i(logger, "reusing exisiting itemview for element ");
-        } else {
-            Log.i(logger, "creating new itemView for element at position " + position);
-            LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.full_list_row, null);
 
-            TextView name = (TextView) view.findViewById(R.id.list_name);
-            TextView date = (TextView) view.findViewById(R.id.list_dateText);
-            TextView time = (TextView) view.findViewById(R.id.list_timeText);
-            CheckBox done = (CheckBox) view.findViewById(R.id.list_doneBox);
-            CheckBox favourite = (CheckBox) view.findViewById(R.id.list_favouriteBox);
+        // get the data item for this position
+        Todo todo = getItem(position);
+        // check if existing view is being reused, otherwise inflate the view
+        ViewHolder viewHolder; // view lookup cache stored in tag
+        if(view == null) {
+            // if there is no view to re-use, inflate a brand new view for row
+            viewHolder = new ViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            view = inflater.inflate(R.layout.full_list_row, parent, false);
 
-            ViewHolder viewHolder = new ViewHolder(view);
-            viewHolder.name = name;
-            viewHolder.date = date;
-            viewHolder.time = time;
-            viewHolder.done = done;
-            viewHolder.favourite = favourite;
+            viewHolder.name = (TextView) view.findViewById(R.id.list_name);
+            viewHolder.date = (TextView) view.findViewById(R.id.list_dateText);
+            viewHolder.time = (TextView) view.findViewById(R.id.list_timeText);
+            viewHolder.done = (CheckBox) view.findViewById(R.id.list_doneBox);
+            viewHolder.favourite = (CheckBox) view.findViewById(R.id.list_favouriteBox);
 
+            // cache the viewHolder object inside the fresh view
             view.setTag(viewHolder);
+        } else {
+            // view is being recycled, retrieve the viewHolder object from tag
+            viewHolder = (ViewHolder) view.getTag();
         }
 
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
-
-        Todo todo = getItem(position);
+        // populate the data from the data object via the viewHolder
         DateFormat fullDateFormatter = new SimpleDateFormat(DD_MM_YYYY);
         DateFormat timeFormatter = new SimpleDateFormat(HH_MM);
         long dbTime = todo.getExpiry();
@@ -101,6 +84,29 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         viewHolder.done.setChecked(todo.isDone());
         viewHolder.favourite.setChecked(todo.isFavourite());
 
+        // add event listener
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fullListView.startDetail(v, viewHolder.id);
+            }
+        });
+
         return view;
+    }
+
+    public void addItem(final Todo todo) {
+        todos.add(todo);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getCount() {
+        return todos.size();
+    }
+
+    @Override
+    public Todo getItem(int position) {
+        return todos.get(position);
     }
 }

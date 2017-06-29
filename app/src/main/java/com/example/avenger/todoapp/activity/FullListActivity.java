@@ -34,10 +34,6 @@ import com.example.avenger.todoapp.view.FullListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.http.HEAD;
-
-import static android.R.attr.id;
-
 public class FullListActivity extends AppCompatActivity implements FullListView {
 
     private static String logger = FullListActivity.class.getSimpleName();
@@ -67,7 +63,6 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
             }
         });
 
-        Log.i("beforePresenter", "......");
         presenter = new FullListPresenter(this, (DBApplication)getApplication());
         presenter.readAllToDos();
     }
@@ -84,12 +79,8 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
     @Override
     public void initializeView(ArrayList<Todo> todos) {
-        Log.i("initView", "......");
-        Log.i("tod size", "" + todos.size());
-
         adapter = new FullListAdapter(this, R.layout.full_list_row, presenter.getTodos(), this);
         ((ListView)listView).setAdapter(adapter);
-        Log.i("count adapter", "" + adapter.getCount());
     }
 
     @Override
