@@ -34,6 +34,8 @@ import com.example.avenger.todoapp.view.FullListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.http.HEAD;
+
 import static android.R.attr.id;
 
 public class FullListActivity extends AppCompatActivity implements FullListView {
@@ -61,7 +63,7 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
                 Context context = v.getContext();
                 Intent showDetailView = new Intent(context, DetailActivity.class);
                 showDetailView.putExtra("createItem", true);
-                startActivityForResult(showDetailView, 1);
+                startActivity(showDetailView);
             }
         });
 

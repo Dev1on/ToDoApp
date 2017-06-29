@@ -110,7 +110,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
         Toast.makeText(this, "Todo deleted", Toast.LENGTH_SHORT).show();
 
-        Intent returnIntent = new Intent();
+        Intent returnIntent = getIntent();
         setResult(RESULT_OK, returnIntent);
         finish();
     }
