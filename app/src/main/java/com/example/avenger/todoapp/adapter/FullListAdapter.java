@@ -1,7 +1,6 @@
 package com.example.avenger.todoapp.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.avenger.todoapp.R;
-import com.example.avenger.todoapp.activity.DetailActivity;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.view.FullListView;
 
@@ -20,8 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class FullListAdapter extends ArrayAdapter<Todo> {
-
-    private static String logger = FullListAdapter.class.getSimpleName();
 
     private ArrayList<Todo> todos = new ArrayList<>();
     private static FullListView fullListView;
@@ -93,11 +89,6 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         });
 
         return view;
-    }
-
-    public void addItem(final Todo todo) {
-        todos.add(todo);
-        notifyDataSetChanged();
     }
 
     @Override
