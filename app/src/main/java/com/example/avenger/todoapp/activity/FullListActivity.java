@@ -1,38 +1,25 @@
 package com.example.avenger.todoapp.activity;
 
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.avenger.todoapp.R;
 import com.example.avenger.todoapp.adapter.FullListAdapter;
 import com.example.avenger.todoapp.database.DBApplication;
-import com.example.avenger.todoapp.helper.DividerItemDecoration;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.presenter.FullListPresenter;
 import com.example.avenger.todoapp.view.FullListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class FullListActivity extends AppCompatActivity implements FullListView {
 

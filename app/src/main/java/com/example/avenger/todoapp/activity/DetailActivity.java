@@ -192,6 +192,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_menu, menu);
+
+        if(createItem) {
+            menu.findItem(R.id.action_delete).setVisible(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
