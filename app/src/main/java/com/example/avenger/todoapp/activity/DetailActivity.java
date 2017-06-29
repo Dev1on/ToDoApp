@@ -284,7 +284,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
                 TextUtils.isEmpty(timeText.getText().toString())) {
             if( nameText.getText().toString().trim().equals("")) {
                 nameText.setError("Name is required!");
-                nameText.setHint("please enter username");
+                nameText.setHint("please enter a name");
             }
             if(dateText.getText().toString().trim().equals("")) {
                 dateText.setError("Date is required!");
