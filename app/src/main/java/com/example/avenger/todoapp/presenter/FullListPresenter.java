@@ -1,7 +1,5 @@
 package com.example.avenger.todoapp.presenter;
 
-import android.util.Log;
-
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.database.ICRUDOperationsAsync;
 import com.example.avenger.todoapp.model.Todo;
@@ -22,24 +20,33 @@ public class FullListPresenter {
         crudOperations = application.getCrudOperations();
     }
 
-    public void readAllToDos() {
+    public void readAllToDosForInit() {
         crudOperations.readAllToDos(result -> {
-
+            ArrayList<Todo> todos = new ArrayList<>();
+            todos.addAll(result);
+            setTodos(todos);
+            fullListView.initializeView(todos);
             if(result.size() == 0) {
                 fullListView.displayTodosNotFound();
-            } else {
-                ArrayList<Todo> todos = new ArrayList<Todo>();
-                todos.addAll(result);
-                setTodos(todos);
-                Log.i("afterReadAllTodoBefInit", ".");
-                fullListView.initializeView(todos);
+            }
+        });
+    }
+
+    public void readAllToDosForChanges() {
+        crudOperations.readAllToDos(result -> {
+            ArrayList<Todo> todos = new ArrayList<>();
+            todos.addAll(result);
+            setTodos(todos);
+            fullListView.updateView(todos);
+            if(result.size() == 0) {
+                fullListView.displayTodosNotFound();
             }
         });
     }
 
     public void updateTodo(Todo todo) {
         crudOperations.updateToDo(todo.getId(), todo, result -> {
-            readAllToDos();
+            readAllToDosForChanges();
         });
     }
 

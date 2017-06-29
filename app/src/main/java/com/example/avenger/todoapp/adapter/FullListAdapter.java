@@ -1,7 +1,7 @@
 package com.example.avenger.todoapp.adapter;
 
 import android.content.Context;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +44,6 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        Log.i("getView", "called");
-
         // get the data item for this position
         Todo todo = getItem(position);
         // check if existing view is being reused, otherwise inflate the view
@@ -116,5 +114,16 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
     @Override
     public Todo getItem(int position) {
         return todos.get(position);
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        todos.clear();
+        notifyDataSetChanged();
+    }
+
+    public void setTodos(ArrayList<Todo> todos) {
+        this.todos.addAll(todos);
     }
 }

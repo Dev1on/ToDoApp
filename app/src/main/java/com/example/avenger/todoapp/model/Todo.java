@@ -1,6 +1,7 @@
 package com.example.avenger.todoapp.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
 public class Todo implements Serializable {
@@ -188,4 +189,11 @@ public class Todo implements Serializable {
             this.name = name;
         }
     }
+
+    public static Comparator<Todo> doneComparator = new Comparator<Todo>() {
+        @Override
+        public int compare(Todo o1, Todo o2) {
+            return Boolean.compare(o2.isDone(), o1.isDone());
+        }
+    };
 }

@@ -98,6 +98,10 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
             progressDialog.dismiss();
             Toast.makeText(this, "Todo saved", Toast.LENGTH_SHORT).show();
+
+            Intent returnIntent = getIntent();
+            setResult(RESULT_OK, returnIntent);
+            finish();
         }
     }
 

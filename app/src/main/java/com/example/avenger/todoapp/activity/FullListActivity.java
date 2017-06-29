@@ -36,8 +36,6 @@ import java.util.List;
 
 public class FullListActivity extends AppCompatActivity implements FullListView {
 
-    private static String logger = FullListActivity.class.getSimpleName();
-
     private FullListPresenter presenter;
     private ViewGroup listView;
     private ArrayAdapter<Todo> adapter;
@@ -59,17 +57,18 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
                 Context context = v.getContext();
                 Intent showDetailView = new Intent(context, DetailActivity.class);
                 showDetailView.putExtra("createItem", true);
-                startActivity(showDetailView);
+                startActivityForResult(showDetailView,1);
             }
         });
 
         presenter = new FullListPresenter(this, (DBApplication)getApplication());
-        presenter.readAllToDos();
+        presenter.readAllToDosForInit();
     }
 
     @Override
     public void toggleDone(Todo todo) {
         presenter.updateTodo(todo);
+        adapter.sort(Todo.doneComparator);
 
     }
 
@@ -84,13 +83,15 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
         ((ListView)listView).setAdapter(adapter);
     }
 
+    public void updateView(ArrayList<Todo> todos) {
+        adapter.clear();
+        ((FullListAdapter)adapter).setTodos(todos);
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public void displayTodosNotFound() {
         Toast.makeText(this, "Sorry, Todos not found", Toast.LENGTH_SHORT).show();
-
-        Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_OK, returnIntent);
-        finish();
     }
 
     @Override
@@ -101,7 +102,7 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        presenter.readAllToDos();
+        presenter.readAllToDosForChanges();
     }
 
     @Override

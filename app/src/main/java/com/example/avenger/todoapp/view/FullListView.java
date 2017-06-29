@@ -15,9 +15,11 @@ public interface FullListView {
 
     void initializeView(ArrayList<Todo> todos);
 
+    void updateView(ArrayList<Todo> todos);
+
     void displayTodosNotFound();
 
-    public void startDetail(View v, long id);
+    void startDetail(View v, long id);
 
     // TODO add sorting
 }
