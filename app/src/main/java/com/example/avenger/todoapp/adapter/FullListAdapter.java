@@ -2,6 +2,7 @@ package com.example.avenger.todoapp.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +73,10 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         DateFormat timeFormatter = new SimpleDateFormat(HH_MM);
         long dbTime = todo.getExpiry();
 
+        Log.d("adapter","Get view with todo..." + todo.getId());
+
+        resetOnCheckedChanged(viewHolder);
+
         viewHolder.id = todo.getId();
         viewHolder.name.setText(todo.getName());
         viewHolder.date.setText(fullDateFormatter.format(dbTime));
@@ -104,6 +109,19 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         });
 
         return view;
+    }
+
+    private void resetOnCheckedChanged(ViewHolder viewHolder) {
+        viewHolder.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            }
+        });
+        viewHolder.favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            }
+        });
     }
 
     @Override
