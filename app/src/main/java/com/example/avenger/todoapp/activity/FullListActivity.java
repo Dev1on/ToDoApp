@@ -59,7 +59,7 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
                 Context context = v.getContext();
                 Intent showDetailView = new Intent(context, DetailActivity.class);
                 showDetailView.putExtra("createItem", true);
-                startActivityForResult(showDetailView, 1);
+                startActivity(showDetailView);
             }
         });
 
@@ -83,8 +83,8 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
         Log.i("initView", "......");
         Log.i("tod size", "" + todos.size());
         adapter = new FullListAdapter(this, R.layout.full_list_row, presenter.getTodos());
-        ((ListView)listView).setAdapter(adapter);
         adapter.setNotifyOnChange(true);
+        ((ListView)listView).setAdapter(adapter);
         Log.i("count adapter", "" + adapter.getCount());
     }
 
