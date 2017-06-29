@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.avenger.todoapp.R;
 import com.example.avenger.todoapp.activity.DetailActivity;
 import com.example.avenger.todoapp.model.Todo;
+import com.example.avenger.todoapp.view.FullListView;
 
 
 import org.w3c.dom.Text;
@@ -29,15 +30,15 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
     private static String logger = FullListAdapter.class.getSimpleName();
 
     private ArrayList<Todo> todos = new ArrayList<>();
+    private static FullListView fullListView;
 
     public static final String HH_MM = "HH:mm";
     public static final String DD_MM_YYYY = "dd.MM.yyyy";
 
-    public FullListAdapter(Context context, int resource, ArrayList<Todo> todos) {
+    public FullListAdapter(Context context, int resource, ArrayList<Todo> todos, FullListView fullListView) {
         super(context,resource,todos);
         this.todos.addAll(todos);
-
-        Log.i("todos in adapter", "" + todos.size());
+        this.fullListView = fullListView;
     }
 
     public static class ViewHolder implements View.OnClickListener {
@@ -55,11 +56,7 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
 
         @Override
         public void onClick(View v) {
-            Context context = v.getContext();
-            Intent showTodoDetails = new Intent(context, DetailActivity.class);
-            showTodoDetails.putExtra("id", id);
-            showTodoDetails.putExtra("createItem", false);
-            context.startActivity(showTodoDetails);
+            fullListView.startDetail(v, this.id);
         }
     }
 

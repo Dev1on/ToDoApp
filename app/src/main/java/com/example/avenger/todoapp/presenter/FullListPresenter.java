@@ -38,6 +38,7 @@ public class FullListPresenter {
     }
 
     public void setTodos(List<Todo> todos) {
+        this.todos.clear();
         this.todos.addAll(todos);
     }
 

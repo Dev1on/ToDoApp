@@ -1,5 +1,7 @@
 package com.example.avenger.todoapp.view;
 
+import android.view.View;
+
 import com.example.avenger.todoapp.model.Todo;
 
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ public interface FullListView {
     void initializeView(ArrayList<Todo> todos);
 
     void displayTodosNotFound();
+
+    public void startDetail(View v, long id);
 
     // TODO add sorting
 }

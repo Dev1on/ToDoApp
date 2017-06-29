@@ -116,6 +116,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     }
 
 
+
+
     @Override
     public void setTodo(Todo todo) {
         idText.setText("" + todo.getId());
@@ -207,6 +209,13 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 
     private void initializeEmpty() {

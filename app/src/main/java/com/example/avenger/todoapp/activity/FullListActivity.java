@@ -34,6 +34,8 @@ import com.example.avenger.todoapp.view.FullListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.id;
+
 public class FullListActivity extends AppCompatActivity implements FullListView {
 
     private static String logger = FullListActivity.class.getSimpleName();
@@ -82,9 +84,9 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     public void initializeView(ArrayList<Todo> todos) {
         Log.i("initView", "......");
         Log.i("tod size", "" + todos.size());
-        adapter = new FullListAdapter(this, R.layout.full_list_row, presenter.getTodos());
+
+        adapter = new FullListAdapter(this, R.layout.full_list_row, presenter.getTodos(), this);
         ((ListView)listView).setAdapter(adapter);
-        adapter.setNotifyOnChange(true);
         Log.i("count adapter", "" + adapter.getCount());
     }
 
@@ -101,5 +103,19 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     public void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        presenter.readAllToDos();
+    }
+
+    @Override
+    public void startDetail(View v, long id) {
+        Context context = v.getContext();
+        Intent showTodoDetails = new Intent(context, DetailActivity.class);
+        showTodoDetails.putExtra("id", id);
+        showTodoDetails.putExtra("createItem", false);
+        startActivityForResult(showTodoDetails, 2);
     }
 }
