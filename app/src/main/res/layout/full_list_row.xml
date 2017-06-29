@@ -25,14 +25,15 @@
         android:id="@+id/list_dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_alignRight="@+id/list_name" />
+        android:layout_alignParentRight="true"
+        android:ems="10" />
     <TextView
         android:id="@+id/list_timeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_alignRight="@+id/list_dateText"/>
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:ems="10"/>
 
     <LinearLayout
         android:layout_width="match_parent"
