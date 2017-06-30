@@ -128,8 +128,8 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_sort_date) {
-            //TODO: sort by date
+        if (item.getItemId() == R.id.action_sort_done) {
+            updateView(presenter.getTodos());
             return true;
         } else if(item.getItemId() == R.id.action_sort_date_importance) {
             //TODO sort by date importance
