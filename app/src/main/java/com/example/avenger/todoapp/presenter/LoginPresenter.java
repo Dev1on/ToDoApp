@@ -61,7 +61,8 @@ public class LoginPresenter {
         try {
             connection = (HttpURLConnection) webApplicationURL.openConnection();
             connection.setReadTimeout(100000);
-            connection.setConnectTimeout(150000);
+            //5 seconds timeout
+            connection.setConnectTimeout(5000);
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
             connection.connect();

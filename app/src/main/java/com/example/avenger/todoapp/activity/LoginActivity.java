@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +13,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.avenger.todoapp.R;
 import com.example.avenger.todoapp.database.DBApplication;
@@ -29,7 +30,9 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     private EditText password;
     private LoginPresenter presenter;
 
+    private Handler handler = new Handler();
     private ProgressDialog progressDialog;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         setContentView(R.layout.login_activity);
 
         presenter = new LoginPresenter(this, getSystemService(Context.CONNECTIVITY_SERVICE));
-        progressDialog = new ProgressDialog(this);
+        alertDialog = new AlertDialog.Builder(this).create();
 
 
 
@@ -54,31 +57,61 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         StrictMode.setThreadPolicy(policy);
 
 
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected void onPreExecute() {
+                progressDialog = ProgressDialog.show(LoginActivity.this, "Loading.", "Loading, please wait...");;
+            }
 
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return presenter.isInternetConnectionAvailable() && presenter.isWebApplicationAvailable();
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                progressDialog.dismiss();
+                if(aBoolean) {
+                    progressBar = (ProgressBar) findViewById(R.id.loginProgress);
+                    findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            presenter.validateCredentials(email.getText().toString(), password.getText().toString());
+                        }
+                    });
+
+                    ((DBApplication)getApplication()).setWebApplicationAvailable(true);
+                } else {
+                    ((DBApplication)getApplication()).setWebApplicationAvailable(false);
+
+                    alertDialog.setTitle("Warning");
+                    alertDialog.setMessage("WebApplication not available. Locale database will be used!");
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            navigateToHome();
+                        }
+                    });
+                    alertDialog.show();
+                }
+            }
+        }.execute();
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+    private void startCheckingForConnectivity() {
         // check internet connection and webApplication availability
-        if(presenter.isInternetConnectionAvailable() && presenter.isWebApplicationAvailable()) {
-            progressBar = (ProgressBar) findViewById(R.id.loginProgress);
-            findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    presenter.validateCredentials(email.getText().toString(), password.getText().toString());
-                }
-            });
 
-            ((DBApplication)getApplication()).setWebApplicationAvailable(true);
-        } else {
-            ((DBApplication)getApplication()).setWebApplicationAvailable(false);
-
-            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-            alertDialog.setTitle("Warning");
-            alertDialog.setMessage("WebApplication not available. Locale database will be used!");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    navigateToHome();
-                }
-            });
-            alertDialog.show();
-        }
     }
 
     @Override
