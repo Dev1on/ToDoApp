@@ -226,8 +226,12 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
+        Intent returnIntent = getIntent();
+        returnIntent.putExtra("operation", "returned");
+        returnIntent.putExtra("todoID", getCurrentTodo().getId());
+        setResult(RESULT_OK, returnIntent);
+        finish();
+
         super.onBackPressed();
     }
 

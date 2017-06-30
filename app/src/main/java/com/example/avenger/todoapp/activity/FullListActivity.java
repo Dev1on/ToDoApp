@@ -103,6 +103,8 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
             case "delete":
                 presenter.removeTodoWithIDFromList(todoID);
                 break;
+            case "returned":
+                break;
         }
     }
 
