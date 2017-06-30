@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.avenger.todoapp.R;
@@ -18,6 +19,9 @@ import com.example.avenger.todoapp.view.FullListView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.avenger.todoapp.R.color.todo;
 
 public class FullListAdapter extends ArrayAdapter<Todo> {
 
@@ -91,7 +95,6 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
                 fullListView.startDetail(v, viewHolder.id);
             }
         });
-
         viewHolder.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -99,7 +102,6 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
                 fullListView.toggleDone(todo);
             }
         });
-
         viewHolder.favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -108,7 +110,30 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
             }
         });
 
+        if (todo.getExpiry() < System.currentTimeMillis())
+            view.setBackgroundColor(0xFFFF0000);
+
         return view;
+    }
+
+    public void checkForExpiry(ListView listView,int pos ,Todo todo) {
+        //check view for expiry
+        if (todo.getExpiry() < System.currentTimeMillis())
+            getViewByPosition(pos, listView).setBackgroundColor(0xFFFF0000);
+        else
+            getViewByPosition(pos, listView).setBackgroundColor(0x00000000);
+    }
+
+    private View getViewByPosition(int pos, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
     }
 
     private void resetOnCheckedChanged(ViewHolder viewHolder) {

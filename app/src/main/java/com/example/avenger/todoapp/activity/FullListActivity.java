@@ -23,6 +23,8 @@ import com.example.avenger.todoapp.view.FullListView;
 
 import java.util.ArrayList;
 
+import static android.R.attr.data;
+
 public class FullListActivity extends AppCompatActivity implements FullListView {
 
     private FullListPresenter presenter;
@@ -78,6 +80,11 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
         adapter.clear();
         todos.sort(Todo.doneComparator);
         ((FullListAdapter)adapter).setTodos(todos);
+        int i = 0;
+        for (Todo todo : todos) {
+            ((FullListAdapter) adapter).checkForExpiry((ListView)listView, i, todo);
+            i++;
+        }
     }
 
     @Override
