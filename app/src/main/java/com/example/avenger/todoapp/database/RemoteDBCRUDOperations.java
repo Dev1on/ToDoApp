@@ -21,7 +21,7 @@ import retrofit2.http.Path;
 
 public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
 
-    private static String WEB_API_BASE_URL = "http://localhost:8080/";
+    private static String WEB_API_BASE_URL = "http:/192.168.43.95:8080/";
     protected static String logger = RemoteDBCRUDOperations.class.getSimpleName();
 
     private ICRUDOperationsWebAPI webAPI;
@@ -40,6 +40,7 @@ public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
             @Override
             protected Todo doInBackground(Todo... params) {
                 try {
+                    Log.d("RemoteCRUD","Jo angelegt.");
                     return webAPI.createToDoItem(todo).execute().body();
                 } catch (IOException e) {
                     Log.d(logger, "Item not created.");
@@ -139,6 +140,24 @@ public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
         }.execute(id);
     }
 
+    @Override
+    public void deleteAllTodos() {
+        new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    return webAPI.deleteAllTodos().execute().body();
+                } catch (IOException e) {
+                    Log.d(logger, "Not all Todos in web application could be deleted.");
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        }.execute();
+    }
+
+
     public ICRUDOperationsWebAPI getWebAPI() {
         return webAPI;
     }
@@ -160,6 +179,7 @@ public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
         @DELETE("/api/todos/{id}")
         Call<Boolean> deleteToDoItem(@Path("id") long id);
 
-        // TODO implement clearDB method
+        @DELETE("/api/todos")
+        Call<Boolean> deleteAllTodos();
     }
 }

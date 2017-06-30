@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.os.Build.VERSION_CODES.M;
 import static com.example.avenger.todoapp.R.color.todo;
 
 public class DBCRUDOperations implements ICRUDOperationsAsync {
@@ -38,7 +39,7 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
             db.execSQL("CREATE TABLE TODOSCONTACTS (TODOID INTEGER REFERENCES TODOS(ID), CONTACTID INTEGER REFERENCES CONTACTS(ID), PRIMARY KEY(TODOID, CONTACTID))");
         }
         // (un)comment to keep todos in database
-        db.execSQL("DELETE FROM " + DB_NAME);
+        //db.execSQL("DELETE FROM " + DB_NAME);
 
         if(webApplicationAvailable) {
             remoteDBCRUDOperations = new RemoteDBCRUDOperations(context);
@@ -53,6 +54,8 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
                 ContentValues values = setContentValuesForTodo(todo);
                 long id = db.insertOrThrow(DB_NAME, null, values);
                 todo.setId(id);
+
+                Log.d("SyncedCrud", "remote is activated: " + webApplicationAvailable);
 
                 if(webApplicationAvailable) {
                     try {
@@ -179,6 +182,62 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
                 callback.process(aBoolean);
             }
         }.execute(id);
+    }
+
+    @Override
+    public void deleteAllTodos() {
+        //dont delete local todos
+        //maybe new feature in future
+    }
+
+    public void deleteAllTodosOnline() {
+            remoteDBCRUDOperations.deleteAllTodos();
+    }
+
+    public void createItemOnline(Todo todo) {
+        remoteDBCRUDOperations.createToDo(todo, new CallbackFunction<Todo>() {
+            @Override
+            public void process(Todo result) {
+                //do nothing
+            }
+        });
+    }
+
+    public List<Todo> readAllTodosOnline() {
+        List<Todo> todoList = new ArrayList<>();
+        remoteDBCRUDOperations.readAllToDos(new CallbackFunction<List<Todo>>() {
+            @Override
+            public void process(List<Todo> result) {
+               for (Todo todo : result) {
+                   createTodoLocal(todo, new CallbackFunction<Todo>() {
+                       @Override
+                       public void process(Todo result) {
+                           Log.d (logger, "Local item created: " + result.getName());
+                           todoList.add(result);
+                       }
+                   });
+               }
+           }
+        });
+
+        return todoList;
+    }
+
+    private void createTodoLocal(Todo todo, CallbackFunction<Todo> callback) {
+        new AsyncTask<Todo, Void, Todo>() {
+            @Override
+            protected Todo doInBackground(Todo... params) {
+                ContentValues values = setContentValuesForTodo(todo);
+                long id = db.insertOrThrow(DB_NAME, null, values);
+                todo.setId(id);
+                return todo;
+            }
+
+            @Override
+            protected void onPostExecute(Todo todo) {
+                callback.process(todo);
+            }
+        }.execute(todo);
     }
 
     @NonNull

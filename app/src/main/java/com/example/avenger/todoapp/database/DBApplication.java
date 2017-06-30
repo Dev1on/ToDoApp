@@ -1,6 +1,7 @@
 package com.example.avenger.todoapp.database;
 
 import android.app.Application;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.avenger.todoapp.model.Todo;
@@ -12,28 +13,11 @@ public class DBApplication extends Application {
 
     private static String logger = DBApplication.class.getSimpleName();
 
-    private boolean webApplicationAvailable;
-
     private ICRUDOperationsAsync crudOperations;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        crudOperations = new DBCRUDOperations(getApplicationContext(), webApplicationAvailable);
-
-        // /(un)comment for local test data
-        createLocalTestData(crudOperations);
-
-        final List<Todo> localTodos = new ArrayList<>();
-        crudOperations.readAllToDos(result -> {
-            Log.i("DBAP", "Result is: " + result.size());
-            localTodos.addAll(result);
-
-            Log.i("DBApplication", "localData exists: " + localTodos.size());
-            if (localTodos.size() > 0) {
-                //TODO if local db has data, then delete all online data and push all local data to remote db
-            }
-        });
     }
 
     public ICRUDOperationsAsync getCrudOperations() {
@@ -41,7 +25,24 @@ public class DBApplication extends Application {
     }
 
     public void setWebApplicationAvailable(boolean available) {
-        webApplicationAvailable= available;
+        crudOperations = new DBCRUDOperations(getApplicationContext(), available);
+        // (un)comment for local test data
+        //createLocalTestData(crudOperations);
+
+        if (available) {
+            final List<Todo> localTodos = new ArrayList<>();
+            crudOperations.readAllToDos(result -> {
+                localTodos.addAll(result);
+                if (localTodos.size() > 0) {
+                    ((DBCRUDOperations)crudOperations).deleteAllTodosOnline();
+                    for (Todo todo : localTodos) {
+                        ((DBCRUDOperations)crudOperations).createItemOnline(todo);
+                    }
+                } else {
+                    List<Todo> remoteTodos = ((DBCRUDOperations)crudOperations).readAllTodosOnline();
+                }
+            });
+        }
     }
 
     private void createLocalTestData(ICRUDOperationsAsync crudOperations) {
