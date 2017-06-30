@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_sort_date"
+        android:title="sort by date"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_date_importance"
+        android:title="sort by date/importance"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_importance_date"
+        android:title="sort by importance/date"
+        app:showAsAction="never" />
+
 
 </menu>

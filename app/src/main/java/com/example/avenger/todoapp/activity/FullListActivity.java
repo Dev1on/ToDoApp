@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -36,6 +38,7 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.list_toolbar);
         setSupportActionBar(toolbar);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -115,5 +118,29 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
         showTodoDetails.putExtra("id", id);
         showTodoDetails.putExtra("createItem", false);
         startActivityForResult(showTodoDetails, 2);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.full_list_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_sort_date) {
+            //TODO: sort by date
+            return true;
+        } else if(item.getItemId() == R.id.action_sort_date_importance) {
+            //TODO sort by date importance
+            return true;
+        } else if(item.getItemId() == R.id.action_sort_importance_date) {
+            //TODO sort by importance date
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+
+
     }
 }
