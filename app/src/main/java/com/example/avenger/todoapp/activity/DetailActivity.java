@@ -6,7 +6,10 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +18,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -38,12 +43,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import static android.R.attr.process;
 import static com.example.avenger.todoapp.R.color.todo;
 
 public class DetailActivity extends AppCompatActivity implements DetailView {
 
     public static final String HH_MM = "HH:mm";
     public static final String DD_MM_YYYY = "dd.MM.yyyy";
+    public static final int PICK_CONTACT_REQ_CODE = 20;
 
     private DetailPresenter presenter;
     private ArrayAdapter<String> adapter;
@@ -57,6 +64,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     private EditText locationText;
     private EditText dateText;
     private EditText timeText;
+    private Button addContact;
 
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
@@ -82,10 +90,20 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         locationText = (EditText) findViewById(R.id.locationTextDetail);
         dateText = (EditText) findViewById(R.id.dateTextDetail);
         timeText = (EditText) findViewById(R.id.timeTextDetail);
+        addContact = (Button) findViewById(R.id.addContactBtn);
 
         setSupportActionBar(toolbar);
         setCalendar();
         setDeleteAlert();
+
+        addContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //start new contacts intent
+                Intent pickContanctIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(pickContanctIntent, PICK_CONTACT_REQ_CODE);
+            }
+        });
 
         createItem = (boolean) getIntent().getSerializableExtra("createItem");
 
@@ -187,7 +205,10 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        long dateAsLong = date.getTime();
+        long dateAsLong = 0;
+        if (date != null)
+            dateAsLong = date.getTime();
+
 
         //TODO location
         Todo.Location location = new Todo.Location();
@@ -210,7 +231,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         returnTodo.setFavourite(favourite);
         returnTodo.setDone(done);
         returnTodo.setLocation(location);
-        returnTodo.setExpiry(dateAsLong);
+        if(dateAsLong != 0)
+            returnTodo.setExpiry(dateAsLong);
         returnTodo.setContacts(contacts);
 
         return returnTodo;
@@ -355,5 +377,23 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         adapter = new ContactAdapter(this, R.layout.full_list_row, contacts, this);
         ((ListView)listView).setAdapter(adapter);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_CONTACT_REQ_CODE && resultCode == RESULT_OK) {
+            processSelectedContact(data.getData());
+        }
+    }
+
+    private void processSelectedContact(Uri data) {
+        Cursor cursor = getContentResolver().query(data, null, null,null,null);
+        cursor.moveToNext();
+        String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+        Todo todo = getCurrentTodo();
+        todo.getContacts().add(name);
+
+        setTodo(todo);
     }
 }
