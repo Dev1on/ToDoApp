@@ -12,14 +12,20 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.avenger.todoapp.R;
+import com.example.avenger.todoapp.adapter.ContactAdapter;
+import com.example.avenger.todoapp.adapter.FullListAdapter;
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.presenter.DetailPresenter;
@@ -28,8 +34,11 @@ import com.example.avenger.todoapp.view.DetailView;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import static com.example.avenger.todoapp.R.color.todo;
 
 public class DetailActivity extends AppCompatActivity implements DetailView {
 
@@ -37,13 +46,14 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     public static final String DD_MM_YYYY = "dd.MM.yyyy";
 
     private DetailPresenter presenter;
+    private ArrayAdapter<String> adapter;
+    private ViewGroup listView;
 
     private TextView idText;
     private EditText nameText;
     private EditText descriptionText;
     private CheckBox favouriteBox;
     private CheckBox doneBox;
-    private EditText contactText;
     private EditText locationText;
     private EditText dateText;
     private EditText timeText;
@@ -68,7 +78,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         descriptionText = (EditText) findViewById(R.id.descriptionTextDetail);
         favouriteBox = (CheckBox) findViewById(R.id.favouriteBoxDetail);
         doneBox = (CheckBox) findViewById(R.id.doneBoxDetail);
-        contactText = (EditText) findViewById(R.id.contactTextDetail);
+        listView = (ViewGroup) findViewById(R.id.contactTextDetail);
         locationText = (EditText) findViewById(R.id.locationTextDetail);
         dateText = (EditText) findViewById(R.id.dateTextDetail);
         timeText = (EditText) findViewById(R.id.timeTextDetail);
@@ -142,10 +152,17 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             dateText.setText(showDate);
             timeText.setText(showTime);
         }
-
         favouriteBox.setChecked(todo.isFavourite());
         doneBox.setChecked(todo.isDone());
-        //contactText.setText(todo.getContacts());
+
+        Log.d("DetailActi","setting Todo and contacts are: " + todo.getContacts());
+        //Setting of contacts should call the adapter and fill it with the todos
+        adapter = new ContactAdapter(this, R.layout.full_list_row, (ArrayList<String>) todo.getContacts(), this);
+        ((ListView)listView).setAdapter(adapter);
+
+
+
+
         locationText.setText(todo.getLocation().getName());
 
         progressDialog.dismiss();
@@ -179,7 +196,14 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         latlng.setLng(13);
         location.setLatlng(latlng);
         location.setName(location_name);
+
+
         //TODO save contacts
+        ArrayList<String> contacts = new ArrayList<>();
+        contacts.addAll(((ContactAdapter)adapter).getContacts());
+        //Die arrayliste muss mit den contacts aus dem adapter befüllt werden und mit semicolons getrennt
+
+
 
         Todo returnTodo = new Todo(name, description);
         returnTodo.setId(id);
@@ -187,6 +211,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         returnTodo.setDone(done);
         returnTodo.setLocation(location);
         returnTodo.setExpiry(dateAsLong);
+        returnTodo.setContacts(contacts);
 
         return returnTodo;
     }
@@ -240,6 +265,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         Todo.LatLng latlng = new Todo.LatLng();
         loc.setLatlng(latlng);
         todo.setLocation(loc);
+        todo.setContacts(new ArrayList<>());
 
         setTodo(todo);
     }
@@ -247,8 +273,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     private void initializeScreenWithTodo() {
         progressDialog.show();
         long itemId = (long) getIntent().getSerializableExtra("id");
-
         presenter.readToDo(itemId);
+
         progressDialog.hide();
     }
 
@@ -323,5 +349,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             return true;
         }
 
+    }
+
+    public void refreshContactList(ArrayList<String> contacts) {
+        adapter = new ContactAdapter(this, R.layout.full_list_row, contacts, this);
+        ((ListView)listView).setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 }

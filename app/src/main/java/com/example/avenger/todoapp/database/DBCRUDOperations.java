@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.value;
 import static android.os.Build.VERSION_CODES.M;
 import static com.example.avenger.todoapp.R.color.todo;
 
@@ -32,11 +33,13 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         this.webApplicationAvailable = webApplicationAvailable;
 
         db = context.openOrCreateDatabase("mydb.sqlite", Context.MODE_PRIVATE, null);
+        //Drop all tables for the first time and set db version to 0, to initialize the db
+        //db.setVersion(0);
+        //db.execSQL("DROP TABLE " + DB_NAME);
+
         if (db.getVersion() == 0) {
             db.setVersion(1);
-            db.execSQL("CREATE TABLE " + DB_NAME + " (ID INTEGER PRIMARY KEY, NAME TEXT, DESCRIPTION TEXT, EXPIRY INTEGER, DONE INTEGER, FAVOURITE INTEGER, LAENGENGRAD INTEGER, BREITENGRAD INTEGER, LOCATIONNAME TEXT)");
-            db.execSQL("CREATE TABLE CONTACTS (ID INTEGER PRIMARY KEY, NAME TEXT, NUMBER TEXT)");
-            db.execSQL("CREATE TABLE TODOSCONTACTS (TODOID INTEGER REFERENCES TODOS(ID), CONTACTID INTEGER REFERENCES CONTACTS(ID), PRIMARY KEY(TODOID, CONTACTID))");
+            db.execSQL("CREATE TABLE " + DB_NAME + " (ID INTEGER PRIMARY KEY, NAME TEXT, DESCRIPTION TEXT, EXPIRY INTEGER, DONE INTEGER, FAVOURITE INTEGER, CONTACTS TEXT ,LAENGENGRAD INTEGER, BREITENGRAD INTEGER, LOCATIONNAME TEXT)");
         }
         // (un)comment to keep todos in database
         //db.execSQL("DELETE FROM " + DB_NAME);
@@ -82,7 +85,7 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
             protected List<Todo> doInBackground(Void... params) {
                 List<Todo> todos = new ArrayList<>();
 
-                Cursor cursor = db.query(DB_NAME, new String[]{"ID", "NAME", "DESCRIPTION", "EXPIRY", "DONE", "FAVOURITE", "LAENGENGRAD", "BREITENGRAD", "LOCATIONNAME"}, null, null, null, null, "ID");
+                Cursor cursor = db.query(DB_NAME, new String[]{"ID", "NAME", "DESCRIPTION", "EXPIRY", "DONE", "FAVOURITE", "CONTACTS", "LAENGENGRAD", "BREITENGRAD", "LOCATIONNAME"}, null, null, null, null, "ID");
                 if(cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     boolean next;
@@ -108,7 +111,7 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         new AsyncTask<Long, Void, Todo>() {
             @Override
             protected Todo doInBackground(Long... params) {
-                Cursor cursor = db.query(DB_NAME, new String[]{"ID", "NAME", "DESCRIPTION", "EXPIRY", "DONE", "FAVOURITE", "LAENGENGRAD", "BREITENGRAD", "LOCATIONNAME"}, null, null, null, null, "ID");
+                Cursor cursor = db.query(DB_NAME, new String[]{"ID", "NAME", "DESCRIPTION", "EXPIRY", "DONE", "FAVOURITE","CONTACTS", "LAENGENGRAD", "BREITENGRAD", "LOCATIONNAME"}, null, null, null, null, "ID");
                 Todo todo = null;
                 if(cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -252,8 +255,14 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         long lng = cursor.getLong(cursor.getColumnIndex("BREITENGRAD"));
         String locationName = cursor.getString(cursor.getColumnIndex("LOCATIONNAME"));
         Todo.Location location = new Todo.Location(locationName, new Todo.LatLng(lat,lng));
-        // TODO read out all contacts
         List<String> contacts = new ArrayList<>();
+        String contactsFromDb = cursor.getString(cursor.getColumnIndex("CONTACTS"));
+        if (!contactsFromDb.equals("")) {
+            String[] substrings = contactsFromDb.split(";");
+            for (String contact : substrings) {
+                contacts.add(contact);
+            }
+        }
 
         Todo todo = new Todo(name, description);
         todo.setId(id);
@@ -277,8 +286,13 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         values.put("LAENGENGRAD", todo.getLocation().getLatlng().getLat());
         values.put("BREITENGRAD", todo.getLocation().getLatlng().getLng());
         values.put("LOCATIONNAME", todo.getLocation().getName());
-
-        // TODO add contacts to db
+        String contactsForDB = "";
+        if (todo.getContacts().size() > 0) {
+            for (String contact : todo.getContacts()) {
+                contactsForDB += contact + ";";
+            }
+        }
+        values.put("CONTACTS", contactsForDB);
 
         return values;
     }
