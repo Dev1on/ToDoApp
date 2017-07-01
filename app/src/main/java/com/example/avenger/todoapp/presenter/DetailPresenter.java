@@ -1,11 +1,19 @@
 package com.example.avenger.todoapp.presenter;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.database.ICRUDOperationsAsync;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.view.DetailView;
+
+import java.util.ArrayList;
+
+import static android.R.attr.id;
 
 public class DetailPresenter {
 
@@ -60,5 +68,41 @@ public class DetailPresenter {
 
     public void onDestroy() {
         detailView = null;
+    }
+
+    public String getContactName(Uri data, ContentResolver resolver) {
+        Cursor cursor = resolver.query(data, null, null,null,null);
+        cursor.moveToNext();
+
+        return cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+    }
+
+    public ArrayList<String> getListOfPhoneNumbersForContact(ContentResolver resolver, String contact) {
+        Cursor contactsCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null,null,null);
+
+        ArrayList<String> allPhoneNumbersForContact = new ArrayList<String>();
+        if(contactsCursor.moveToFirst())
+        {
+            do
+            {
+                //get current contact in cursor
+                String curName = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                //if contact equals contact in cursor then get phoneNumbers
+                if(contact.equals(curName)) {
+                    if (Integer.parseInt(contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                        Cursor phoneNumberCursor =  resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.Contacts.DISPLAY_NAME +" = ?",new String[]{ curName }, null);
+                        while (phoneNumberCursor.moveToNext()) {
+                            String contactNumber = phoneNumberCursor.getString(phoneNumberCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            allPhoneNumbersForContact.add(contactNumber);
+                            break;
+                        }
+                        phoneNumberCursor.close();
+                    }
+                    break;
+                }
+            } while (contactsCursor.moveToNext()) ;
+        }
+
+        return allPhoneNumbersForContact;
     }
 }

@@ -1,13 +1,16 @@
 package com.example.avenger.todoapp.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
@@ -42,8 +45,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static android.R.attr.process;
+import static android.R.id.message;
 import static com.example.avenger.todoapp.R.color.todo;
 
 public class DetailActivity extends AppCompatActivity implements DetailView {
@@ -51,6 +56,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     public static final String HH_MM = "HH:mm";
     public static final String DD_MM_YYYY = "dd.MM.yyyy";
     public static final int PICK_CONTACT_REQ_CODE = 20;
+    // Request code for READ_CONTACTS. It can be any number > 0.
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     private DetailPresenter presenter;
     private ArrayAdapter<String> adapter;
@@ -71,6 +78,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     private AlertDialog.Builder alertDialogBuilder;
 
     private boolean createItem = false;
+    private String contact;
+    private String smsOrEmail;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -173,12 +182,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         favouriteBox.setChecked(todo.isFavourite());
         doneBox.setChecked(todo.isDone());
 
-        Log.d("DetailActi","setting Todo and contacts are: " + todo.getContacts());
-        //Setting of contacts should call the adapter and fill it with the todos
         adapter = new ContactAdapter(this, R.layout.full_list_row, (ArrayList<String>) todo.getContacts(), this);
         ((ListView)listView).setAdapter(adapter);
-
-
 
 
         locationText.setText(todo.getLocation().getName());
@@ -218,13 +223,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         location.setLatlng(latlng);
         location.setName(location_name);
 
-
-        //TODO save contacts
         ArrayList<String> contacts = new ArrayList<>();
         contacts.addAll(((ContactAdapter)adapter).getContacts());
-        //Die arrayliste muss mit den contacts aus dem adapter befüllt werden und mit semicolons getrennt
-
-
 
         Todo returnTodo = new Todo(name, description);
         returnTodo.setId(id);
@@ -387,13 +387,64 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     }
 
     private void processSelectedContact(Uri data) {
-        Cursor cursor = getContentResolver().query(data, null, null,null,null);
-        cursor.moveToNext();
-        String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
+        String name = presenter.getContactName(data, getContentResolver());
         Todo todo = getCurrentTodo();
         todo.getContacts().add(name);
-
         setTodo(todo);
+    }
+
+    public void startSMSProcess() {
+        //ask for permission to read all contacts
+        this.smsOrEmail = "sms";
+        askForPermission(smsOrEmail);
+    }
+
+    public void startSmsActivity() {
+        ArrayList<String> numbers = presenter.getListOfPhoneNumbersForContact(getContentResolver(), contact);
+
+        if (numbers.size() > 0) {
+            Todo todo = getCurrentTodo();
+
+            String message = "Hey, here is a Todo for you:\n" + "Title: " + todo.getName() + "\n" +
+                    "Description: " + todo.getDescription() + "\n\n" + "Happy solving!!";
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + numbers.get(0)));
+            intent.putExtra("sms_body", message);
+            startActivity(intent);
+        } else {
+            showContactError();
+        }
+    }
+
+    public void askForPermission(String smsOrMail) {
+        // Check the SDK version and whether the permission is already granted or not.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            // Android version is lesser than 6.0 or the permission is already granted.
+            if (smsOrMail.equals("sms"))
+                startSmsActivity();
+            
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                askForPermission(smsOrEmail);
+            } else {
+                Toast.makeText(this, "Until you grant the permission, we cannot create a sms for you.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    private void showContactError() {
+        Toast.makeText(this, "No number or matching contact found...", Toast.LENGTH_SHORT).show();
     }
 }
