@@ -3,6 +3,7 @@ package com.example.avenger.todoapp.model;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
 public class Todo implements Serializable {
 
@@ -190,10 +191,9 @@ public class Todo implements Serializable {
         }
     }
 
-    public static Comparator<Todo> doneComparator = new Comparator<Todo>() {
-        @Override
-        public int compare(Todo o1, Todo o2) {
-            return Boolean.compare(o2.isDone(), o1.isDone());
-        }
-    };
+    public static Comparator<Todo> doneComparator = Comparator.comparing(Todo::isDone).reversed();
+
+    public static Comparator<Todo> dateImportanceComparator = Comparator.comparing(Todo::getExpiry).thenComparing(Todo::isFavourite).reversed();
+
+    public static Comparator<Todo> importanceDateComparator = Comparator.comparing(Todo::isFavourite).thenComparing(Todo::getExpiry).reversed();
 }

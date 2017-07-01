@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,14 +23,14 @@ import com.example.avenger.todoapp.presenter.FullListPresenter;
 import com.example.avenger.todoapp.view.FullListView;
 
 import java.util.ArrayList;
-
-import static android.R.attr.data;
+import java.util.Comparator;
 
 public class FullListActivity extends AppCompatActivity implements FullListView {
 
     private FullListPresenter presenter;
     private ViewGroup listView;
     private ArrayAdapter<Todo> adapter;
+    private Comparator sortOrder = Todo.doneComparator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     @Override
     public void toggleDone(Todo todo) {
         presenter.updateTodo(todo);
-        adapter.sort(Todo.doneComparator);
+        adapter.sort(sortOrder);
 
     }
 
@@ -71,14 +72,14 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
     @Override
     public void initializeView(ArrayList<Todo> todos) {
-        todos.sort(Todo.doneComparator);
+        todos.sort(sortOrder);
         adapter = new FullListAdapter(this, R.layout.full_list_row, todos, this);
         ((ListView)listView).setAdapter(adapter);
     }
 
     public void updateView(ArrayList<Todo> todos) {
         adapter.clear();
-        todos.sort(Todo.doneComparator);
+        todos.sort(sortOrder);
         ((FullListAdapter)adapter).setTodos(todos);
         int i = 0;
         for (Todo todo : todos) {
@@ -136,18 +137,23 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_sort_done) {
+            setSortOrder(Todo.doneComparator);
             updateView(presenter.getTodos());
             return true;
-        } else if(item.getItemId() == R.id.action_sort_date_importance) {
-            //TODO sort by date importance
+        } else if (item.getItemId() == R.id.action_sort_date_importance) {
+            setSortOrder(Todo.dateImportanceComparator);
+            updateView(presenter.getTodos());
             return true;
-        } else if(item.getItemId() == R.id.action_sort_importance_date) {
-            //TODO sort by importance date
+        } else if (item.getItemId() == R.id.action_sort_importance_date) {
+            setSortOrder(Todo.importanceDateComparator);
+            updateView(presenter.getTodos());
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
 
-
+    public void setSortOrder(Comparator sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

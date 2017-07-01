@@ -111,7 +111,7 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         });
 
         if (todo.getExpiry() < System.currentTimeMillis())
-            view.setBackgroundColor(0xFFFF0000);
+            view.setBackgroundColor(0xBBBB0000);
 
         return view;
     }
