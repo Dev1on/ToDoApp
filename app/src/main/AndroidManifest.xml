@@ -54,6 +54,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity
+            android:name=".activity.tab_activity"
+            android:label="@string/title_activity_tab_activity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.FullListMapActivity"
+            android:label="@string/title_activity_full_list_map"></activity>
     </application>
 
 </manifest>
