@@ -56,21 +56,19 @@ public class FullListMapActivity extends Fragment implements FullListMapView {
                 for (Todo todo : todos) {
                     Log.i("onMapReady", "markerAdded");
                     Todo.Location location = todo.getLocation();
-                    LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
-                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                        @Override
-                        public boolean onMarkerClick(Marker marker) {
-                            Integer todoId = (Integer) marker.getTag();
-                            startDetail(todoId);
-                            return false;
-                        }
-                    });
+                    if(location != null) {
+                        LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
+                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker marker) {
+                                Integer todoId = (Integer) marker.getTag();
+                                startDetail(todoId);
+                                return false;
+                            }
+                        });
+                    }
                 }
-
-                LatLng sydney = new LatLng(-34, 151);
-                mMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
             }
         });
 
