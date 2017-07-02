@@ -399,14 +399,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         askForPermission(smsOrEmail);
     }
 
-    public void startSmsActivity() {
+    private void startSmsActivity() {
         ArrayList<String> numbers = presenter.getListOfPhoneNumbersForContact(getContentResolver(), contact);
 
         if (numbers.size() > 0) {
-            Todo todo = getCurrentTodo();
-
-            String message = "Hey, here is a Todo for you:\n" + "Title: " + todo.getName() + "\n" +
-                    "Description: " + todo.getDescription() + "\n\n" + "Happy solving!!";
+            String message = getMessage();
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + numbers.get(0)));
             intent.putExtra("sms_body", message);
             startActivity(intent);
@@ -415,7 +412,37 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         }
     }
 
-    public void askForPermission(String smsOrMail) {
+    private void startEmailActivity() {
+        ArrayList<String> emails = presenter.getListOfEmailsForContact(getContentResolver(), contact);
+
+        if (emails.size() > 0) {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL  , new String[]{emails.get(0)});
+            i.putExtra(Intent.EXTRA_SUBJECT, "MAD ToDo App: new Todo for you!");
+            i.putExtra(Intent.EXTRA_TEXT   , getMessage());
+            try {
+                startActivity(Intent.createChooser(i, "Send mail..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(DetailActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            showContactError();
+        }
+    }
+
+    private String getMessage() {
+        Todo todo = getCurrentTodo();
+        return "Hey, here is a Todo for you:\n" + "Title: " + todo.getName() + "\n" +
+                "Description: " + todo.getDescription() + "\n\n" + "Happy solving!!";
+    }
+
+    public void startEmailProcess() {
+        this.smsOrEmail = "email";
+        askForPermission(smsOrEmail);
+    }
+
+    private void askForPermission(String smsOrMail) {
         // Check the SDK version and whether the permission is already granted or not.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
@@ -424,7 +451,9 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             // Android version is lesser than 6.0 or the permission is already granted.
             if (smsOrMail.equals("sms"))
                 startSmsActivity();
-            
+            else if (smsOrMail.equals("email"))
+                startEmailActivity();
+
         }
     }
 
@@ -435,7 +464,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 askForPermission(smsOrEmail);
             } else {
-                Toast.makeText(this, "Until you grant the permission, we cannot create a sms for you.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Until you grant the permission, we cannot create a sms or email for you.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -445,6 +474,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     }
 
     private void showContactError() {
-        Toast.makeText(this, "No number or matching contact found...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "No number or email or contact found...", Toast.LENGTH_SHORT).show();
     }
 }

@@ -74,43 +74,33 @@ public class ContactAdapter extends ArrayAdapter<String> {
         }
 
         viewHolder.name.setText(contact);
-        viewHolder.actionSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //display message with two buttons: sms and email
-                AlertDialog.Builder builder = new AlertDialog.Builder(((DetailActivity) detailView));
-                builder.setMessage("Do you want to send a sms or email?")
-                        .setCancelable(true)
-                        .setPositiveButton("SMS", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //set contact in detailView and start requesting process
-                                ((DetailActivity)detailView).setContact(contact);
-                                ((DetailActivity)detailView).startSMSProcess();
-                            }
-                        })
-                        .setNegativeButton("eMail", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //if email clicked
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
+        viewHolder.actionSend.setOnClickListener(v -> {
+            //display message with two buttons: sms and email
+            AlertDialog.Builder builder = new AlertDialog.Builder(((DetailActivity) detailView));
+            builder.setMessage("Do you want to send a sms or email?")
+                    .setCancelable(true)
+                    .setPositiveButton("SMS", (dialog, id) -> {
+                        //set contact in detailView and start requesting process
+                        ((DetailActivity)detailView).setContact(contact);
+                        ((DetailActivity)detailView).startSMSProcess();
+                    })
+                    .setNegativeButton("eMail", (dialog, id) -> {
+                        ((DetailActivity)detailView).setContact(contact);
+                        ((DetailActivity)detailView).startEmailProcess();
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
         });
 
-        viewHolder.actionDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList<String> newContacts = new ArrayList<String>();
-                for (String con : contacts) {
-                    if (!con.equals(contact))
-                        newContacts.add(con);
-                }
-                contacts = newContacts;
-                Log.d("Contact deleted", "remaining: " + contacts);
-                ((DetailActivity)detailView).refreshContactList(contacts);
+        viewHolder.actionDelete.setOnClickListener(v -> {
+            ArrayList<String> newContacts = new ArrayList<String>();
+            for (String con : contacts) {
+                if (!con.equals(contact))
+                    newContacts.add(con);
             }
+            contacts = newContacts;
+            Log.d("Contact deleted", "remaining: " + contacts);
+            ((DetailActivity)detailView).refreshContactList(contacts);
         });
 
 

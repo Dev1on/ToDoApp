@@ -102,6 +102,34 @@ public class DetailPresenter {
                 }
             } while (contactsCursor.moveToNext()) ;
         }
+        return allPhoneNumbersForContact;
+    }
+
+    public ArrayList<String> getListOfEmailsForContact(ContentResolver resolver, String contact) {
+        Cursor contactsCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null,null,null);
+
+        ArrayList<String> allPhoneNumbersForContact = new ArrayList<String>();
+        if(contactsCursor.moveToFirst())
+        {
+            do
+            {
+                //get current contact in cursor
+                String curName = contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                //if contact equals contact in cursor then get phoneNumbers
+                if(contact.equals(curName)) {
+                    if (Integer.parseInt(contactsCursor.getString(contactsCursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                        Cursor emailCursor =  resolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,ContactsContract.Contacts.DISPLAY_NAME +" = ?",new String[]{ curName }, null);
+                        while (emailCursor.moveToNext()) {
+                            String contactNumber = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                            allPhoneNumbersForContact.add(contactNumber);
+                            break;
+                        }
+                        emailCursor.close();
+                    }
+                    break;
+                }
+            } while (contactsCursor.moveToNext()) ;
+        }
 
         return allPhoneNumbersForContact;
     }
