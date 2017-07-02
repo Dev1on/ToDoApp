@@ -17,7 +17,6 @@ public class Todo implements Serializable {
     private long expiry;
     private boolean done;
     private boolean favourite;
-    // TODO implement real contact (create new model class + think about representation)
     private List<String> contacts;
     private Location location;
 

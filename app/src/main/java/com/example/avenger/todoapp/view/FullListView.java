@@ -21,5 +21,4 @@ public interface FullListView {
 
     void startDetail(View v, long id);
 
-    // TODO add sorting
 }

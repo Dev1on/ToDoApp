@@ -8,7 +8,6 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,11 +31,16 @@ import android.widget.Toast;
 
 import com.example.avenger.todoapp.R;
 import com.example.avenger.todoapp.adapter.ContactAdapter;
-import com.example.avenger.todoapp.adapter.FullListAdapter;
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.presenter.DetailPresenter;
 import com.example.avenger.todoapp.view.DetailView;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -45,13 +48,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import static android.R.attr.process;
-import static android.R.id.message;
-import static com.example.avenger.todoapp.R.color.todo;
-
-public class DetailActivity extends AppCompatActivity implements DetailView {
+public class DetailActivity extends AppCompatActivity implements DetailView, OnMapReadyCallback {
 
     public static final String HH_MM = "HH:mm";
     public static final String DD_MM_YYYY = "dd.MM.yyyy";
@@ -72,8 +70,10 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
     private EditText dateText;
     private EditText timeText;
     private Button addContact;
+    private GoogleMap mMap;
 
     private ProgressDialog progressDialog;
+    private ProgressDialog loadingActivityDialog;
     private Toolbar toolbar;
     private AlertDialog.Builder alertDialogBuilder;
 
@@ -86,8 +86,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_activity);
 
-        presenter = new DetailPresenter(this, ((DBApplication)getApplication()));
-        progressDialog = new ProgressDialog(this);
+        presenter = new DetailPresenter(DetailActivity.this, ((DBApplication) getApplication()));
+        progressDialog = new ProgressDialog(DetailActivity.this);
         toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
 
         idText = (TextView) findViewById(R.id.idTextDetail);
@@ -101,18 +101,14 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
         timeText = (EditText) findViewById(R.id.timeTextDetail);
         addContact = (Button) findViewById(R.id.addContactBtn);
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.detail_map);
+        mapFragment.getMapAsync(DetailActivity.this);
+
+
         setSupportActionBar(toolbar);
         setCalendar();
         setDeleteAlert();
-
-        addContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //start new contacts intent
-                Intent pickContanctIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-                startActivityForResult(pickContanctIntent, PICK_CONTACT_REQ_CODE);
-            }
-        });
 
         createItem = (boolean) getIntent().getSerializableExtra("createItem");
 
@@ -120,6 +116,12 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
             initializeEmpty();
         else
             initializeScreenWithTodo();
+
+        addContact.setOnClickListener(v -> {
+            //start new contacts intent
+            Intent pickContanctIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            startActivityForResult(pickContanctIntent, PICK_CONTACT_REQ_CODE);
+        });
     }
 
     @Override
@@ -475,5 +477,15 @@ public class DetailActivity extends AppCompatActivity implements DetailView {
 
     private void showContactError() {
         Toast.makeText(this, "No number or email or contact found...", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

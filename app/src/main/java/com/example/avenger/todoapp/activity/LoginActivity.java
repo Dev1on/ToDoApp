@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
-                progressDialog = ProgressDialog.show(LoginActivity.this, "Loading.", "Loading, please wait...");;
+                progressDialog = ProgressDialog.show(LoginActivity.this, "Loading.", "Loading, please wait...");
             }
 
             @Override
