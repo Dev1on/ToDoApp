@@ -8,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,8 +18,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -42,6 +45,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,13 +54,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.avenger.todoapp.R.color.todo;
+
 public class DetailActivity extends AppCompatActivity implements DetailView, OnMapReadyCallback {
 
     public static final String HH_MM = "HH:mm";
     public static final String DD_MM_YYYY = "dd.MM.yyyy";
     public static final int PICK_CONTACT_REQ_CODE = 20;
-    // Request code for READ_CONTACTS. It can be any number > 0.
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    public static final int START_MAP_ACTIVITY = 200;
 
     private DetailPresenter presenter;
     private ArrayAdapter<String> adapter;
@@ -71,6 +78,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     private EditText timeText;
     private Button addContact;
     private GoogleMap mMap;
+    private MarkerOptions marker;
 
     private ProgressDialog progressDialog;
     private ProgressDialog loadingActivityDialog;
@@ -121,6 +129,15 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
             //start new contacts intent
             Intent pickContanctIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
             startActivityForResult(pickContanctIntent, PICK_CONTACT_REQ_CODE);
+        });
+        listView.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
         });
     }
 
@@ -191,6 +208,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         locationText.setText(todo.getLocation().getName());
 
         progressDialog.dismiss();
+
+        setMapLocation(todo);
     }
 
     @Override
@@ -200,7 +219,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         String description = descriptionText.getText().toString();
         boolean favourite = favouriteBox.isChecked();
         boolean done = doneBox.isChecked();
-        String location_name = locationText.getText().toString();
 
         //date
         String dateString = dateText.getText().toString();
@@ -216,14 +234,12 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         if (date != null)
             dateAsLong = date.getTime();
 
-
-        //TODO location
         Todo.Location location = new Todo.Location();
         Todo.LatLng latlng = new Todo.LatLng();
-        latlng.setLat(12);
-        latlng.setLng(13);
+        latlng.setLat(marker.getPosition().latitude);
+        latlng.setLng(marker.getPosition().longitude);
         location.setLatlng(latlng);
-        location.setName(location_name);
+        location.setName(locationText.getText().toString());
 
         ArrayList<String> contacts = new ArrayList<>();
         contacts.addAll(((ContactAdapter)adapter).getContacts());
@@ -381,11 +397,28 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         adapter.notifyDataSetChanged();
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_CONTACT_REQ_CODE && resultCode == RESULT_OK) {
             processSelectedContact(data.getData());
+        } else if (requestCode == START_MAP_ACTIVITY && resultCode == RESULT_OK) {
+            processSelectedLocation(data.getSerializableExtra("location"));
         }
+    }
+
+    private void processSelectedLocation(Serializable location) {
+        String locationName = ((Todo.Location)location).getName();
+        double lat = ((Todo.Location)location).getLatlng().getLat();
+        double lng = ((Todo.Location)location).getLatlng().getLng();
+        Log.d("OLD_VALUES", "Lat: " + lat + ", Long: " + lng);
+        Log.d("NEW_VALUES", "Lat: " + (long)lat + ", Long: " + (long)lng);
+
+        Todo todo = getCurrentTodo();
+        todo.setLocation(new Todo.Location(locationName, new Todo.LatLng((long)lat, (long)lng)));
+
+        presenter.setTodo(todo);
+        setTodo(todo);
     }
 
     private void processSelectedContact(Uri data) {
@@ -482,10 +515,23 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapClickListener(latLng -> startNewMapActivity());
+    }
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    private void startNewMapActivity() {
+        Intent selectNewLocationActivity = new Intent(DetailActivity.this, DetailMapsActivity.class);
+
+        selectNewLocationActivity.putExtra("location", getCurrentTodo().getLocation());
+        startActivityForResult(selectNewLocationActivity, START_MAP_ACTIVITY);
+    }
+
+    private void setMapLocation(Todo todo) {
+        LatLng googleLatLng = new LatLng(todo.getLocation().getLatlng().getLat(), todo.getLocation().getLatlng().getLng());
+
+        mMap.clear();
+        marker = new MarkerOptions().position(googleLatLng).title(todo.getLocation().getName());
+        mMap.addMarker(marker);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(googleLatLng));
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
 }
