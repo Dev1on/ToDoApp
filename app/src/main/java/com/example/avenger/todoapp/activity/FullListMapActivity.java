@@ -77,7 +77,6 @@ public class FullListMapActivity extends Fragment implements FullListMapView, On
     public boolean onMarkerClick(Marker marker) {
         Integer todoId = (Integer) marker.getTag();
         startDetail(todoId);
-
         return false;
     }
 
