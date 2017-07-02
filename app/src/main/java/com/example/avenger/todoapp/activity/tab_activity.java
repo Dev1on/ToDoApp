@@ -1,29 +1,16 @@
 package com.example.avenger.todoapp.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.TextView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.example.avenger.todoapp.R;
-import com.example.avenger.todoapp.adapter.FullListAdapter;
-import com.example.avenger.todoapp.view.FullListView;
 
 public class tab_activity extends AppCompatActivity {
 
@@ -79,6 +66,10 @@ public class tab_activity extends AppCompatActivity {
                 case 0:
                     FullListActivity tab1 = new FullListActivity();
                     return tab1;
+                case 1:
+                    FullListMapActivity tab2 = new FullListMapActivity();
+                    return tab2;
+
             }
             return null;
         }
@@ -86,7 +77,7 @@ public class tab_activity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 2 total pages.
-            return 1;
+            return 2;
         }
 
         @Override
