@@ -36,11 +36,14 @@
             android:hint="Name"/>
         <EditText
             android:id="@+id/descriptionTextDetail"
+            android:ems="10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Description" />
+            android:layout_weight="1"
+            android:hint="Description"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLength="2000"
+            android:maxLines="4" />/>
         <EditText
             android:id="@+id/dateTextDetail"
             android:layout_width="match_parent"
