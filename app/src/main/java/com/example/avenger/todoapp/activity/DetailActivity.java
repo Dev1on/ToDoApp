@@ -139,6 +139,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
                 return false;
             }
         });
+
     }
 
     @Override
@@ -236,8 +237,10 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
 
         Todo.Location location = new Todo.Location();
         Todo.LatLng latlng = new Todo.LatLng();
-        latlng.setLat(marker.getPosition().latitude);
-        latlng.setLng(marker.getPosition().longitude);
+        if(marker != null) {
+            latlng.setLat(marker.getPosition().latitude);
+            latlng.setLng(marker.getPosition().longitude);
+        }
         location.setLatlng(latlng);
         location.setName(locationText.getText().toString());
 
@@ -306,6 +309,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         loc.setLatlng(latlng);
         todo.setLocation(loc);
         todo.setContacts(new ArrayList<>());
+        marker = null;
 
         setTodo(todo);
     }
@@ -411,11 +415,12 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         String locationName = ((Todo.Location)location).getName();
         double lat = ((Todo.Location)location).getLatlng().getLat();
         double lng = ((Todo.Location)location).getLatlng().getLng();
-        Log.d("OLD_VALUES", "Lat: " + lat + ", Long: " + lng);
-        Log.d("NEW_VALUES", "Lat: " + (long)lat + ", Long: " + (long)lng);
+        Todo.LatLng newLatLng = new Todo.LatLng();
+        newLatLng.setLat(lat);
+        newLatLng.setLng(lng);
 
         Todo todo = getCurrentTodo();
-        todo.setLocation(new Todo.Location(locationName, new Todo.LatLng((long)lat, (long)lng)));
+        todo.setLocation(new Todo.Location(locationName, newLatLng));
 
         presenter.setTodo(todo);
         setTodo(todo);
@@ -521,17 +526,21 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     private void startNewMapActivity() {
         Intent selectNewLocationActivity = new Intent(DetailActivity.this, DetailMapsActivity.class);
 
-        selectNewLocationActivity.putExtra("location", getCurrentTodo().getLocation());
+        if (marker != null) {
+            selectNewLocationActivity.putExtra("location", getCurrentTodo().getLocation());
+        }
         startActivityForResult(selectNewLocationActivity, START_MAP_ACTIVITY);
     }
 
     private void setMapLocation(Todo todo) {
         LatLng googleLatLng = new LatLng(todo.getLocation().getLatlng().getLat(), todo.getLocation().getLatlng().getLng());
 
-        mMap.clear();
-        marker = new MarkerOptions().position(googleLatLng).title(todo.getLocation().getName());
-        mMap.addMarker(marker);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(googleLatLng));
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        if (mMap != null) {
+            mMap.clear();
+            marker = new MarkerOptions().position(googleLatLng).title(todo.getLocation().getName());
+            mMap.addMarker(marker);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(googleLatLng));
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        }
     }
 }

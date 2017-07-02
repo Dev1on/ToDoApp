@@ -39,7 +39,7 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
 
         if (db.getVersion() == 0) {
             db.setVersion(1);
-            db.execSQL("CREATE TABLE " + DB_NAME + " (ID INTEGER PRIMARY KEY, NAME TEXT, DESCRIPTION TEXT, EXPIRY INTEGER, DONE INTEGER, FAVOURITE INTEGER, CONTACTS TEXT ,LAENGENGRAD INTEGER, BREITENGRAD INTEGER, LOCATIONNAME TEXT)");
+            db.execSQL("CREATE TABLE " + DB_NAME + " (ID INTEGER PRIMARY KEY, NAME TEXT, DESCRIPTION TEXT, EXPIRY INTEGER, DONE INTEGER, FAVOURITE INTEGER, CONTACTS TEXT ,LAENGENGRAD FLOAT, BREITENGRAD FLOAT, LOCATIONNAME TEXT)");
         }
         // (un)comment to keep todos in database
         db.execSQL("DELETE FROM " + DB_NAME);
@@ -251,10 +251,14 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         long expiry = cursor.getLong(cursor.getColumnIndex("EXPIRY"));
         boolean done = (cursor.getInt(cursor.getColumnIndex("DONE"))) == 1;
         boolean favourite = (cursor.getInt(cursor.getColumnIndex("FAVOURITE"))) == 1;
-        long lat = cursor.getLong(cursor.getColumnIndex("LAENGENGRAD"));
-        long lng = cursor.getLong(cursor.getColumnIndex("BREITENGRAD"));
+        double lat = cursor.getDouble(cursor.getColumnIndex("LAENGENGRAD"));
+        double lng = cursor.getDouble(cursor.getColumnIndex("BREITENGRAD"));
+
         String locationName = cursor.getString(cursor.getColumnIndex("LOCATIONNAME"));
-        Todo.Location location = new Todo.Location(locationName, new Todo.LatLng(lat,lng));
+        Todo.LatLng latLng = new Todo.LatLng();
+        latLng.setLat(lat);
+        latLng.setLng(lng);
+        Todo.Location location = new Todo.Location(locationName, latLng);
         List<String> contacts = new ArrayList<>();
         String contactsFromDb = cursor.getString(cursor.getColumnIndex("CONTACTS"));
         if (!contactsFromDb.equals("")) {
@@ -283,9 +287,15 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         values.put("EXPIRY", todo.getExpiry());
         values.put("DONE", todo.isDone());
         values.put("FAVOURITE", todo.isFavourite());
-        values.put("LAENGENGRAD", todo.getLocation().getLatlng().getLat());
-        values.put("BREITENGRAD", todo.getLocation().getLatlng().getLng());
-        values.put("LOCATIONNAME", todo.getLocation().getName());
+        if(todo.getLocation() != null) {
+            values.put("LAENGENGRAD", todo.getLocation().getLatlng().getLat());
+            values.put("BREITENGRAD", todo.getLocation().getLatlng().getLng());
+            values.put("LOCATIONNAME", todo.getLocation().getName());
+        } else {
+            values.put("LAENGENGRAD", "");
+            values.put("BREITENGRAD", "");
+            values.put("LOCATIONNAME", "");
+        }
         String contactsForDB = "";
         if (todo.getContacts().size() > 0) {
             for (String contact : todo.getContacts()) {

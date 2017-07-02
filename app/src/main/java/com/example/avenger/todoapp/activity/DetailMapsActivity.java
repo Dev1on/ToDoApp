@@ -104,10 +104,12 @@ public class DetailMapsActivity extends AppCompatActivity implements
         });
 
         Todo.Location loc = (Todo.Location)getIntent().getSerializableExtra("location");
-        LatLng oldPos = new LatLng(loc.getLatlng().getLat(), loc.getLatlng().getLng());
-        MarkerOptions marker = new MarkerOptions().position(oldPos).title(loc.getName());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(oldPos, 8f));
-        mMap.addMarker(marker);
+        if (loc != null) {
+            LatLng oldPos = new LatLng(loc.getLatlng().getLat(), loc.getLatlng().getLng());
+            MarkerOptions marker = new MarkerOptions().position(oldPos).title(loc.getName());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(oldPos, 8f));
+            mMap.addMarker(marker);
+        }
 
     }
 
