@@ -3,6 +3,7 @@ package com.example.avenger.todoapp.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.presenter.FullListMapPresenter;
 import com.example.avenger.todoapp.view.FullListMapView;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,7 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class FullListMapActivity extends Fragment implements FullListMapView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class FullListMapActivity extends Fragment implements FullListMapView {
 
     private MapView mMapView;
     private GoogleMap mMap;
@@ -46,6 +48,32 @@ public class FullListMapActivity extends Fragment implements FullListMapView, On
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        mMapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mMap = googleMap;
+                Log.i("onMapReady", "beforeTODOS");
+                for (Todo todo : todos) {
+                    Log.i("onMapReady", "markerAdded");
+                    Todo.Location location = todo.getLocation();
+                    LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            Integer todoId = (Integer) marker.getTag();
+                            startDetail(todoId);
+                            return false;
+                        }
+                    });
+                }
+
+                LatLng sydney = new LatLng(-34, 151);
+                mMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+
+            }
+        });
 
         return rootView;
     }
@@ -71,22 +99,5 @@ public class FullListMapActivity extends Fragment implements FullListMapView, On
     @Override
     public void setTodos(ArrayList<Todo> todos) {
         this.todos = todos;
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        Integer todoId = (Integer) marker.getTag();
-        startDetail(todoId);
-        return false;
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        for (Todo todo : todos) {
-            Todo.Location location = todo.getLocation();
-            LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
-            mMap.setOnMarkerClickListener(this);
-        }
     }
 }
