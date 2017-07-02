@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,6 +80,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     private Button addContact;
     private GoogleMap mMap;
     private MarkerOptions marker;
+    private ImageButton deleteLocationButton;
 
     private ProgressDialog progressDialog;
     private ProgressDialog loadingActivityDialog;
@@ -108,6 +110,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         dateText = (EditText) findViewById(R.id.dateTextDetail);
         timeText = (EditText) findViewById(R.id.timeTextDetail);
         addContact = (Button) findViewById(R.id.addContactBtn);
+        deleteLocationButton = (ImageButton) findViewById(R.id.action_delete_location);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.detail_map);
@@ -137,6 +140,14 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
                 // Disallow the touch request for parent scroll on touch of child view
                 v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
+            }
+        });
+        deleteLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Todo todo = getCurrentTodo();
+                todo.setLocation(null);
+                setTodo(todo);
             }
         });
 
@@ -205,8 +216,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         adapter = new ContactAdapter(this, R.layout.full_list_row, (ArrayList<String>) todo.getContacts(), this);
         ((ListView)listView).setAdapter(adapter);
 
-
-        locationText.setText(todo.getLocation().getName());
+        if (todo.getLocation() != null) {
+            locationText.setText(todo.getLocation().getName());
+        } else {
+            locationText.setText("");
+        }
 
         progressDialog.dismiss();
 
@@ -235,27 +249,26 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         if (date != null)
             dateAsLong = date.getTime();
 
-        Todo.Location location = new Todo.Location();
-        Todo.LatLng latlng = new Todo.LatLng();
-        if(marker != null) {
-            latlng.setLat(marker.getPosition().latitude);
-            latlng.setLng(marker.getPosition().longitude);
-        }
-        location.setLatlng(latlng);
-        location.setName(locationText.getText().toString());
-
         ArrayList<String> contacts = new ArrayList<>();
         contacts.addAll(((ContactAdapter)adapter).getContacts());
 
         Todo returnTodo = new Todo(name, description);
+
+        if(marker != null) {
+            Todo.Location location = new Todo.Location();
+            Todo.LatLng latlng = new Todo.LatLng();
+            latlng.setLat(marker.getPosition().latitude);
+            latlng.setLng(marker.getPosition().longitude);
+            location.setLatlng(latlng);
+            location.setName(locationText.getText().toString());
+            returnTodo.setLocation(location);
+        }
         returnTodo.setId(id);
         returnTodo.setFavourite(favourite);
         returnTodo.setDone(done);
-        returnTodo.setLocation(location);
         if(dateAsLong != 0)
             returnTodo.setExpiry(dateAsLong);
         returnTodo.setContacts(contacts);
-
         return returnTodo;
     }
 
@@ -304,10 +317,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
 
     private void initializeEmpty() {
         Todo todo = new Todo("","");
-        Todo.Location loc = new Todo.Location();
-        Todo.LatLng latlng = new Todo.LatLng();
-        loc.setLatlng(latlng);
-        todo.setLocation(loc);
+
         todo.setContacts(new ArrayList<>());
         marker = null;
 
@@ -422,7 +432,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         Todo todo = getCurrentTodo();
         todo.setLocation(new Todo.Location(locationName, newLatLng));
 
-        presenter.setTodo(todo);
         setTodo(todo);
     }
 
@@ -533,14 +542,21 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     }
 
     private void setMapLocation(Todo todo) {
-        LatLng googleLatLng = new LatLng(todo.getLocation().getLatlng().getLat(), todo.getLocation().getLatlng().getLng());
+        if (todo.getLocation() != null) {
+            LatLng googleLatLng = new LatLng(todo.getLocation().getLatlng().getLat(), todo.getLocation().getLatlng().getLng());
 
-        if (mMap != null) {
-            mMap.clear();
-            marker = new MarkerOptions().position(googleLatLng).title(todo.getLocation().getName());
-            mMap.addMarker(marker);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(googleLatLng));
-            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            if (mMap != null) {
+                mMap.clear();
+                marker = new MarkerOptions().position(googleLatLng).title(todo.getLocation().getName());
+                mMap.addMarker(marker);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(googleLatLng));
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            }
+        } else {
+            if (mMap != null) {
+                marker = null;
+                mMap.clear();
+            }
         }
     }
 }

@@ -39,7 +39,7 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
 
         if (db.getVersion() == 0) {
             db.setVersion(1);
-            db.execSQL("CREATE TABLE " + DB_NAME + " (ID INTEGER PRIMARY KEY, NAME TEXT, DESCRIPTION TEXT, EXPIRY INTEGER, DONE INTEGER, FAVOURITE INTEGER, CONTACTS TEXT ,LAENGENGRAD FLOAT, BREITENGRAD FLOAT, LOCATIONNAME TEXT)");
+            db.execSQL("CREATE TABLE " + DB_NAME + " (ID INTEGER PRIMARY KEY, NAME TEXT, DESCRIPTION TEXT, EXPIRY INTEGER, DONE INTEGER, FAVOURITE INTEGER, CONTACTS TEXT ,LAENGENGRAD TEXT, BREITENGRAD TEXT, LOCATIONNAME TEXT)");
         }
         // (un)comment to keep todos in database
         db.execSQL("DELETE FROM " + DB_NAME);
@@ -251,14 +251,11 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         long expiry = cursor.getLong(cursor.getColumnIndex("EXPIRY"));
         boolean done = (cursor.getInt(cursor.getColumnIndex("DONE"))) == 1;
         boolean favourite = (cursor.getInt(cursor.getColumnIndex("FAVOURITE"))) == 1;
-        double lat = cursor.getDouble(cursor.getColumnIndex("LAENGENGRAD"));
-        double lng = cursor.getDouble(cursor.getColumnIndex("BREITENGRAD"));
-
+        String lat = cursor.getString(cursor.getColumnIndex("LAENGENGRAD"));
+        String lng = cursor.getString(cursor.getColumnIndex("BREITENGRAD"));
         String locationName = cursor.getString(cursor.getColumnIndex("LOCATIONNAME"));
-        Todo.LatLng latLng = new Todo.LatLng();
-        latLng.setLat(lat);
-        latLng.setLng(lng);
-        Todo.Location location = new Todo.Location(locationName, latLng);
+
+
         List<String> contacts = new ArrayList<>();
         String contactsFromDb = cursor.getString(cursor.getColumnIndex("CONTACTS"));
         if (!contactsFromDb.equals("")) {
@@ -269,11 +266,19 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         }
 
         Todo todo = new Todo(name, description);
+
+        if (!(lat.equals("") && lng.equals("") && locationName.equals(""))) {
+            Todo.LatLng latLng = new Todo.LatLng();
+            latLng.setLat(Double.valueOf(lat));
+            latLng.setLng(Double.valueOf(lng));
+            Todo.Location location = new Todo.Location(locationName, latLng);
+            todo.setLocation(location);
+        }
+
         todo.setId(id);
         todo.setExpiry(expiry);
         todo.setDone(done);
         todo.setFavourite(favourite);
-        todo.setLocation(location);
         todo.setContacts(contacts);
 
         return todo;
