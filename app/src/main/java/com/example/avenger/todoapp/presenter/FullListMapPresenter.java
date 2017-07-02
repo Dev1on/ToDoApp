@@ -4,14 +4,9 @@ import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.database.ICRUDOperationsAsync;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.view.FullListMapView;
-import com.example.avenger.todoapp.view.FullListView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by Avenger on 02.07.17.
- */
 
 public class FullListMapPresenter {
 

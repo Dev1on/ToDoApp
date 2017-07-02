@@ -1,7 +1,9 @@
 package com.example.avenger.todoapp.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class FullListMapActivity extends Fragment implements FullListMapView {
+public class FullListMapActivity extends Fragment implements FullListMapView, View.OnClickListener {
 
     private MapView mMapView;
     private GoogleMap mMap;
@@ -37,10 +39,13 @@ public class FullListMapActivity extends Fragment implements FullListMapView {
         mMapView = (MapView) rootView.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
 
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+
         presenter = new FullListMapPresenter(this, (DBApplication)getActivity().getApplication());
         presenter.readAllToDosForInit();
 
-        mMapView.onResume(); // needed to get the map to display immediately
+        mMapView.onResume();
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -62,7 +67,7 @@ public class FullListMapActivity extends Fragment implements FullListMapView {
                         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                             @Override
                             public boolean onMarkerClick(Marker marker) {
-                                Integer todoId = (Integer) marker.getTag();
+                                long todoId = (long) marker.getTag();
                                 startDetail(todoId);
                                 return false;
                             }
@@ -77,7 +82,43 @@ public class FullListMapActivity extends Fragment implements FullListMapView {
 
     @Override
     public void updateView(ArrayList<Todo> todos) {
+        mMap.clear();
+        for (Todo todo : todos) {
+            Log.i("onMapReady", "markerAdded");
+            Todo.Location location = todo.getLocation();
+            if(location != null) {
+                LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
+                mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        long todoId = (long) marker.getTag();
+                        startDetail(todoId);
+                        return false;
+                    }
+                });
+            }
+        }
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String operation = data.getStringExtra("operation");
+        long todoID = data.getLongExtra("todoID", 0);
+
+        switch (operation) {
+            case "create":
+                presenter.readAllToDosForChanges();
+                break;
+            case "update":
+                presenter.updateTodoWithIDInList(todoID);
+                break;
+            case "delete":
+                presenter.removeTodoWithIDFromList(todoID);
+                break;
+            case "returned":
+                break;
+        }
     }
 
     @Override
@@ -96,5 +137,13 @@ public class FullListMapActivity extends Fragment implements FullListMapView {
     @Override
     public void setTodos(ArrayList<Todo> todos) {
         this.todos = todos;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Context context = v.getContext();
+        Intent showDetailView = new Intent(context, DetailActivity.class);
+        showDetailView.putExtra("createItem", true);
+        startActivityForResult(showDetailView,1);
     }
 }
