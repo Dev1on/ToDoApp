@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +25,7 @@ import com.example.avenger.todoapp.view.FullListView;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class FullListActivity extends AppCompatActivity implements FullListView {
+public class FullListActivity extends Fragment implements FullListView, View.OnClickListener {
 
     private FullListPresenter presenter;
     private ViewGroup listView;
@@ -33,29 +33,19 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     private Comparator sortOrder = Todo.doneComparator;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.full_list_activity);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.full_list_activity, container, false);
 
-        listView = (ViewGroup) findViewById(R.id.list_view_todo_list);
+        listView = (ViewGroup) rootView.findViewById(R.id.list_view_todo_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.list_toolbar);
-        setSupportActionBar(toolbar);
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(this);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Intent showDetailView = new Intent(context, DetailActivity.class);
-                showDetailView.putExtra("createItem", true);
-                startActivityForResult(showDetailView,1);
-            }
-        });
-
-        presenter = new FullListPresenter(this, (DBApplication)getApplication());
+        presenter = new FullListPresenter(this, (DBApplication)getActivity().getApplication());
         presenter.readAllToDosForInit();
+
+        return rootView;
     }
 
     @Override
@@ -73,7 +63,7 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     @Override
     public void initializeView(ArrayList<Todo> todos) {
         todos.sort(sortOrder);
-        adapter = new FullListAdapter(this, R.layout.full_list_row, todos, this);
+        adapter = new FullListAdapter(getContext(), R.layout.full_list_row, todos, this);
         ((ListView)listView).setAdapter(adapter);
     }
 
@@ -90,7 +80,7 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
     @Override
     public void displayTodosNotFound() {
-        Toast.makeText(this, "Sorry, Todos not found", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Sorry, Todos not found", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -100,7 +90,7 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String operation = data.getStringExtra("operation");
         long todoID = data.getLongExtra("todoID", 0);
 
@@ -129,9 +119,9 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.full_list_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.full_list_menu, menu);
     }
 
     @Override
@@ -155,5 +145,13 @@ public class FullListActivity extends AppCompatActivity implements FullListView 
 
     public void setSortOrder(Comparator sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Context context = v.getContext();
+        Intent showDetailView = new Intent(context, DetailActivity.class);
+        showDetailView.putExtra("createItem", true);
+        startActivityForResult(showDetailView,1);
     }
 }
