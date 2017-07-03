@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="@color/todo"
         android:textSize="@dimen/todo_text_name"
         android:textStyle="bold" />
 
