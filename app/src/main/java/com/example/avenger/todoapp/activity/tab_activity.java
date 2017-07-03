@@ -27,9 +27,6 @@ public class tab_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_activity);
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("todos", todos);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the two
@@ -46,10 +43,6 @@ public class tab_activity extends AppCompatActivity {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -86,13 +79,5 @@ public class tab_activity extends AppCompatActivity {
             }
             return null;
         }
-    }
-
-    public ArrayList<Todo> getTodos() {
-        return todos;
-    }
-
-    public void setTodos(ArrayList<Todo> todos) {
-        this.todos = todos;
     }
 }
