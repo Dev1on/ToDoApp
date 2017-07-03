@@ -14,4 +14,6 @@ public interface FullListMapView {
 
     void fillWithTodos(ArrayList<Todo> todos);
 
+    void updateListView(ArrayList<Todo> todos);
+
 }

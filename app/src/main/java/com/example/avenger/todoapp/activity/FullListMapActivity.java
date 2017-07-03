@@ -31,7 +31,7 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
     private MapView mMapView;
     private GoogleMap mMap;
     private FullListMapPresenter presenter;
-    private TabContainerActivity activity;
+    private TodosUpdatedInMap callback;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.full_list_map_activity, container, false);
@@ -117,11 +117,23 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
         });
     }
 
+    public void updateListView(ArrayList<Todo> todos) {
+        callback.updateTodosList(todos);
+    }
+
+    public void fillWithTodosAfterChangesInList(ArrayList<Todo> todos) {
+        fillWithTodos(todos);
+    }
+
     @Override
     public void onClick(View v) {
         Context context = v.getContext();
         Intent showDetailView = new Intent(context, DetailActivity.class);
         showDetailView.putExtra("createItem", true);
         startActivityForResult(showDetailView,1);
+    }
+
+    public interface TodosUpdatedInMap {
+        void updateTodosList(ArrayList<Todo> todos);
     }
 }

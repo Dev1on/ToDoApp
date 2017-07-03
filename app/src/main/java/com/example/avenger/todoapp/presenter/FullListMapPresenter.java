@@ -36,6 +36,7 @@ public class FullListMapPresenter {
             ArrayList<Todo> todos = new ArrayList<>();
             todos.addAll(result);
             setTodos(todos);
+            fullListMapView.updateListView(todos);
             fullListMapView.fillWithTodos(todos);
             if(result.size() == 0) {
                 fullListMapView.displayTodosNotFound();
@@ -55,6 +56,7 @@ public class FullListMapPresenter {
                 if(todoInList.getId() == result.getId()) {
                     int index = getTodos().indexOf(todoInList);
                     getTodos().set(index, result);
+                    fullListMapView.updateListView(todos);
                     fullListMapView.fillWithTodos(todos);
                     return;
                 }
@@ -67,6 +69,7 @@ public class FullListMapPresenter {
             if(todoInList.getId() == id) {
                 int index = getTodos().indexOf(todoInList);
                 getTodos().remove(index);
+                fullListMapView.updateListView(todos);
                 fullListMapView.fillWithTodos(todos);
                 return;
             }

@@ -11,8 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.avenger.todoapp.R;
+import com.example.avenger.todoapp.model.Todo;
 
-public class TabContainerActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class TabContainerActivity extends AppCompatActivity implements FullListActivity.TodosUpdatedInList, FullListMapActivity.TodosUpdatedInMap {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -24,9 +27,13 @@ public class TabContainerActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FullListActivity fullListActivity = new FullListActivity();
+        FullListMapActivity fullListMapActivity = new FullListMapActivity();
+
         // Create the adapter that will return a fragment for each of the two
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), fullListActivity, fullListMapActivity);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -38,22 +45,39 @@ public class TabContainerActivity extends AppCompatActivity {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     }
 
+    @Override
+    public void updateTodosMap(ArrayList<Todo> todos) {
+        FullListMapActivity mapActivity = (FullListMapActivity) mSectionsPagerAdapter.getItem(1);
+        mapActivity.fillWithTodosAfterChangesInList(todos);
+    }
+
+    @Override
+    public void updateTodosList(ArrayList<Todo> todos) {
+        FullListActivity listActivity = (FullListActivity) mSectionsPagerAdapter.getItem(0);
+        listActivity.updateMapView(todos);
+    }
+
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private FullListActivity fullListActivity;
+        private FullListMapActivity fullListMapActivity;
+
+        public SectionsPagerAdapter(FragmentManager fm, FullListActivity fullListActivity, FullListMapActivity fullListMapActivity) {
             super(fm);
+            this.fullListActivity = fullListActivity;
+            this.fullListMapActivity = fullListMapActivity;
         }
 
         @Override
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    FullListActivity tab1 = new FullListActivity();
+                    FullListActivity tab1 = fullListActivity;
                     return tab1;
                 case 1:
-                    FullListMapActivity tab2 = new FullListMapActivity();
+                    FullListMapActivity tab2 = fullListMapActivity;
                     return tab2;
-
             }
             return null;
         }

@@ -38,6 +38,7 @@ public class FullListPresenter {
             todos.addAll(result);
             setTodos(todos);
             fullListView.updateView(todos);
+            fullListView.updateMapView(todos);
             if(result.size() == 0) {
                 fullListView.displayTodosNotFound();
             }
@@ -57,6 +58,7 @@ public class FullListPresenter {
                     int index = getTodos().indexOf(todoInList);
                     getTodos().set(index, result);
                     fullListView.updateView(todos);
+                    fullListView.updateMapView(todos);
                     return;
                 }
             }
@@ -69,6 +71,7 @@ public class FullListPresenter {
                 int index = getTodos().indexOf(todoInList);
                 getTodos().remove(index);
                 fullListView.updateView(todos);
+                fullListView.updateMapView(todos);
                 return;
             }
         }

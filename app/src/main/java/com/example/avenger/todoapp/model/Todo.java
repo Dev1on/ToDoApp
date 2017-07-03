@@ -195,7 +195,7 @@ public class Todo implements Serializable {
 
     public static Comparator<Todo> doneComparator = Comparator.comparing(Todo::isDone);
 
-    public static Comparator<Todo> dateImportanceComparator = Comparator.comparing(Todo::isDone).thenComparing(Todo::getExpiry).thenComparing(Todo::isFavourite).reversed();
+    public static Comparator<Todo> dateImportanceComparator = Comparator.comparing(Todo::isDone).thenComparing(Todo::getExpiry).thenComparing(Todo::isFavourite);
 
-    public static Comparator<Todo> importanceDateComparator = Comparator.comparing(Todo::isDone).thenComparing(Todo::isFavourite).reversed().thenComparing(Todo::getExpiry);
+    public static Comparator<Todo> importanceDateComparator = Comparator.comparing(Todo::isDone).thenComparing(Todo::isFavourite).thenComparing(Todo::getExpiry);
 }

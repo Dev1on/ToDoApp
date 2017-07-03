@@ -1,13 +1,11 @@
 package com.example.avenger.todoapp.activity;
 
-import android.app.TabActivity;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +32,7 @@ public class FullListActivity extends Fragment implements FullListView, View.OnC
     private ViewGroup listView;
     private ArrayAdapter<Todo> adapter;
     private Comparator sortOrder = Todo.doneComparator;
+    private TodosUpdatedInList callback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,9 +77,18 @@ public class FullListActivity extends Fragment implements FullListView, View.OnC
         ((FullListAdapter)adapter).setTodos(todos);
         int i = 0;
         for (Todo todo : todos) {
-            ((FullListAdapter) adapter).checkForExpiry((ListView)listView, i, todo);
+            ((FullListAdapter) adapter).checkForExpiry((ListView) listView, i, todo);
             i++;
         }
+    }
+
+    @Override
+    public void updateMapView(ArrayList<Todo> todos) {
+        callback.updateTodosMap(todos);
+    }
+
+    public void updateViewAfterChangesInMap(ArrayList<Todo> todos) {
+        updateView(todos);
     }
 
     @Override
@@ -158,5 +166,28 @@ public class FullListActivity extends Fragment implements FullListView, View.OnC
         Intent showDetailView = new Intent(context, DetailActivity.class);
         showDetailView.putExtra("createItem", true);
         startActivityForResult(showDetailView,1);
+    }
+
+    public interface TodosUpdatedInList {
+        void updateTodosMap(ArrayList<Todo> todos);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Activity parentActivity;
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        if (context instanceof Activity){
+            parentActivity = (Activity) context;
+            try {
+                callback = (TodosUpdatedInList) parentActivity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(parentActivity.toString()
+                        + " must implement TodosUpdated");
+            }
+        }
     }
 }

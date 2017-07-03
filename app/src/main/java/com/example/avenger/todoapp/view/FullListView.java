@@ -17,6 +17,8 @@ public interface FullListView {
 
     void updateView(ArrayList<Todo> todos);
 
+    void updateMapView(ArrayList<Todo> todos);
+
     void displayTodosNotFound();
 
     void startDetail(View v, long id);
