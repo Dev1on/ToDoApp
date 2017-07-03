@@ -3,19 +3,9 @@ package com.example.avenger.todoapp.model;
 import java.io.Serializable;
 
 public class User implements Serializable {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = -7306724305413428761L;
-
     private String pwd;
-
     private String email;
-
-    public User() {
-
-    }
 
     public User(String email,String pwd) {
         this.email = email;

@@ -56,7 +56,6 @@ public class FullListActivity extends Fragment implements FullListView, View.OnC
     public void toggleDone(Todo todo) {
         presenter.updateTodo(todo);
         adapter.sort(sortOrder);
-
     }
 
     @Override

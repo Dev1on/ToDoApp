@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -126,7 +125,6 @@ public class DetailMapsActivity extends AppCompatActivity implements
         return false;
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -157,7 +155,6 @@ public class DetailMapsActivity extends AppCompatActivity implements
     private void showMissingPermissionError() {
         Toast.makeText(DetailMapsActivity.this, "You have to enable location permission to use this function.", Toast.LENGTH_SHORT).show();
     }
-
 
     private Location getLocation() {
         Todo.LatLng latlng = new Todo.LatLng();

@@ -2,10 +2,8 @@ package com.example.avenger.todoapp.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -50,7 +48,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         // set policy to all due to thread problems
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
 
         new AsyncTask<Void, Void, Boolean>() {
             @Override

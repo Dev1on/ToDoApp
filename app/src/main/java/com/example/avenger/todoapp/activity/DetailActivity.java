@@ -128,8 +128,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
 
         addContact.setOnClickListener(v -> {
             //start new contacts intent
-            Intent pickContanctIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-            startActivityForResult(pickContanctIntent, PICK_CONTACT_REQ_CODE);
+            Intent pickContactIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            startActivityForResult(pickContactIntent, PICK_CONTACT_REQ_CODE);
         });
         listView.setOnTouchListener((v, event) -> {
             // Disallow the touch request for parent scroll on touch of child view
@@ -137,9 +137,9 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
             return false;
         });
         deleteLocationButton.setOnClickListener(v -> {
-            Todo todo1 = getCurrentTodo();
-            todo1.setLocation(null);
-            setTodo(todo1);
+            Todo todo = getCurrentTodo();
+            todo.setLocation(null);
+            setTodo(todo);
         });
 
     }
@@ -162,7 +162,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
             progressDialog.dismiss();
             Toast.makeText(this, "Todo saved", Toast.LENGTH_SHORT).show();
 
-
             Intent returnIntent = getIntent();
             setResult(RESULT_OK, returnIntent);
             returnIntent.putExtra("operation", operation);
@@ -176,7 +175,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     @Override
     public void deleteItem() {
         presenter.deleteToDo((long) getIntent().getSerializableExtra("id"));
-
         Toast.makeText(this, "Todo deleted", Toast.LENGTH_SHORT).show();
 
         Intent returnIntent = getIntent();
@@ -275,7 +273,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_menu, menu);
-
         if(createItem) {
             menu.findItem(R.id.action_delete).setVisible(false);
         }
@@ -302,13 +299,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         returnIntent.putExtra("operation", "returned");
         setResult(RESULT_OK, returnIntent);
         finish();
-
         super.onBackPressed();
     }
 
     private void initializeEmpty() {
         Todo todo = new Todo("","");
-
         todo.setContacts(new ArrayList<>());
         marker = null;
 
@@ -402,7 +397,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         adapter.notifyDataSetChanged();
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_CONTACT_REQ_CODE && resultCode == RESULT_OK) {
@@ -441,7 +435,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
 
     private void startSmsActivity() {
         ArrayList<String> numbers = presenter.getListOfPhoneNumbersForContact(getContentResolver(), contact);
-
         if (numbers.size() > 0) {
             String message = getMessage();
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + numbers.get(0)));
@@ -454,7 +447,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
 
     private void startEmailActivity() {
         ArrayList<String> emails = presenter.getListOfEmailsForContact(getContentResolver(), contact);
-
         if (emails.size() > 0) {
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("message/rfc822");
@@ -493,7 +485,6 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
                 startSmsActivity();
             else if (smsOrMail.equals("email"))
                 startEmailActivity();
-
         }
     }
 

@@ -157,7 +157,6 @@ public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
         }.execute();
     }
 
-
     public ICRUDOperationsWebAPI getWebAPI() {
         return webAPI;
     }

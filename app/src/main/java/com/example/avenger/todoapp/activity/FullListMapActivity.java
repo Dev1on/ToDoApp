@@ -20,7 +20,6 @@ import com.example.avenger.todoapp.view.FullListMapView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -95,9 +94,7 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
         mMapView.getMapAsync(googleMap -> {
             mMap = googleMap;
             mMap.clear();
-            Log.i("onMapReady", "beforeTODOS");
             for (Todo todo : todos) {
-                Log.i("onMapReady", "markerAdded");
                 Todo.Location location = todo.getLocation();
                 if(location != null) {
                     LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
