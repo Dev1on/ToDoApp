@@ -107,7 +107,7 @@
                 android:layout_height="@android:dimen/app_icon_size"
                 android:src="@drawable/icon_trash_bin_48dp"
                 android:background="@drawable/icon_trash_bin_48dp"
-                />
+                android:contentDescription=""/>
 
         </LinearLayout>
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"

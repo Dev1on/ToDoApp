@@ -31,10 +31,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.FullListActivity"
-            android:label="To Do List"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activity.DetailActivity"
             android:label="To Do Detail"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -58,9 +54,6 @@
             android:name=".activity.TabContainerActivity"
             android:label="@string/title_activity_tab_activity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.FullListMapActivity"
-            android:label="@string/title_activity_full_list_map"></activity>
     </application>
 
 </manifest>

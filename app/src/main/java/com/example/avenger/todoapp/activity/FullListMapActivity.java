@@ -123,6 +123,7 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
     }
 
     public void fillWithTodosAfterChangesInList(ArrayList<Todo> todos) {
+        presenter.setTodos(todos);
         fillWithTodos(todos);
     }
 

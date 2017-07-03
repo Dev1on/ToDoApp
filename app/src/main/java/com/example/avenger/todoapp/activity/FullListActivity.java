@@ -88,6 +88,7 @@ public class FullListActivity extends Fragment implements FullListView, View.OnC
     }
 
     public void updateViewAfterChangesInMap(ArrayList<Todo> todos) {
+        presenter.setTodos(todos);
         updateView(todos);
     }
 
