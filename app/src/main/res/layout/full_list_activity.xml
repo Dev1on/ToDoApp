@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.avenger.todoapp.activity.tab_activity">
+    tools:context="com.example.avenger.todoapp.activity.TabContainerActivity">
 
 <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

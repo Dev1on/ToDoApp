@@ -11,13 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.avenger.todoapp.R;
-import com.example.avenger.todoapp.model.Todo;
 
-import java.util.ArrayList;
-
-public class tab_activity extends AppCompatActivity {
-
-    public ArrayList<Todo> todos = new ArrayList<>();
+public class TabContainerActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -25,7 +20,7 @@ public class tab_activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tab_activity);
+        setContentView(R.layout.tab_container_activity);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

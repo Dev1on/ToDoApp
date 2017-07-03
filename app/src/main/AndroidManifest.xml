@@ -55,7 +55,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".activity.tab_activity"
+            android:name=".activity.TabContainerActivity"
             android:label="@string/title_activity_tab_activity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

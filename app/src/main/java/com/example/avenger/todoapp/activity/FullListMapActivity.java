@@ -1,6 +1,5 @@
 package com.example.avenger.todoapp.activity;
 
-import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +31,7 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
     private MapView mMapView;
     private GoogleMap mMap;
     private FullListMapPresenter presenter;
-    private ArrayList<Todo> todos;
+    private TabContainerActivity activity;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.full_list_map_activity, container, false);
@@ -45,8 +44,6 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
 
         presenter = new FullListMapPresenter(this, (DBApplication)getActivity().getApplication());
         presenter.readAllToDosForInit();
-
-        Bundle bundle = getArguments();
 
         mMapView.onResume();
 
@@ -94,8 +91,6 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
 
     @Override
     public void fillWithTodos(ArrayList<Todo> todos) {
-        this.todos = todos;
-
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
