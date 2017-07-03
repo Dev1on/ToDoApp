@@ -1,5 +1,6 @@
 package com.example.avenger.todoapp.activity;
 
+import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,6 +45,8 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
 
         presenter = new FullListMapPresenter(this, (DBApplication)getActivity().getApplication());
         presenter.readAllToDosForInit();
+
+        Bundle bundle = getArguments();
 
         mMapView.onResume();
 

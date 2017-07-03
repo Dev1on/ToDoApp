@@ -1,5 +1,8 @@
 package com.example.avenger.todoapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
@@ -190,9 +193,9 @@ public class Todo implements Serializable {
         }
     }
 
-    public static Comparator<Todo> doneComparator = Comparator.comparing(Todo::isDone).reversed();
+    public static Comparator<Todo> doneComparator = Comparator.comparing(Todo::isDone);
 
-    public static Comparator<Todo> dateImportanceComparator = Comparator.comparing(Todo::getExpiry).thenComparing(Todo::isFavourite).reversed();
+    public static Comparator<Todo> dateImportanceComparator = Comparator.comparing(Todo::isDone).thenComparing(Todo::isFavourite).thenComparing(Todo::getExpiry);
 
-    public static Comparator<Todo> importanceDateComparator = Comparator.comparing(Todo::isFavourite).thenComparing(Todo::getExpiry).reversed();
+    public static Comparator<Todo> importanceDateComparator = Comparator.comparing(Todo::isDone).thenComparing(Todo::getExpiry).thenComparing(Todo::isFavourite);
 }

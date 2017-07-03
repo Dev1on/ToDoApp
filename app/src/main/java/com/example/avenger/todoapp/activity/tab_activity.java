@@ -11,28 +11,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.avenger.todoapp.R;
+import com.example.avenger.todoapp.model.Todo;
+
+import java.util.ArrayList;
 
 public class tab_activity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    public ArrayList<Todo> todos = new ArrayList<>();
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+    private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_activity);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("todos", todos);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -90,5 +86,13 @@ public class tab_activity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    public ArrayList<Todo> getTodos() {
+        return todos;
+    }
+
+    public void setTodos(ArrayList<Todo> todos) {
+        this.todos = todos;
     }
 }

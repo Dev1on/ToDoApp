@@ -1,5 +1,6 @@
 package com.example.avenger.todoapp.activity;
 
+import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +22,6 @@ import com.example.avenger.todoapp.R;
 import com.example.avenger.todoapp.adapter.FullListAdapter;
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.model.Todo;
-import com.example.avenger.todoapp.presenter.FullListMapPresenter;
 import com.example.avenger.todoapp.presenter.FullListPresenter;
 import com.example.avenger.todoapp.view.FullListView;
 
@@ -31,7 +31,6 @@ import java.util.Comparator;
 public class FullListActivity extends Fragment implements FullListView, View.OnClickListener {
 
     private FullListPresenter presenter;
-    private FullListMapPresenter mapPresenter;
     private ViewGroup listView;
     private ArrayAdapter<Todo> adapter;
     private Comparator sortOrder = Todo.doneComparator;
@@ -103,15 +102,12 @@ public class FullListActivity extends Fragment implements FullListView, View.OnC
         switch (operation) {
             case "create":
                 presenter.readAllToDosForChanges();
-                mapPresenter.readAllToDosForChanges();
                 break;
             case "update":
                 presenter.updateTodoWithIDInList(todoID);
-                mapPresenter.updateTodoWithIDInList(todoID);
                 break;
             case "delete":
                 presenter.removeTodoWithIDFromList(todoID);
-                mapPresenter.removeTodoWithIDFromList(todoID);
                 break;
             case "returned":
                 break;
