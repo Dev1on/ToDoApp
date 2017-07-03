@@ -22,11 +22,11 @@ import retrofit2.http.Path;
 public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
 
     private static String WEB_API_BASE_URL = "http:/192.168.43.95:8080/";
-    protected static String logger = RemoteDBCRUDOperations.class.getSimpleName();
+    private static final String logger = RemoteDBCRUDOperations.class.getSimpleName();
 
-    private ICRUDOperationsWebAPI webAPI;
+    private final ICRUDOperationsWebAPI webAPI;
 
-    public RemoteDBCRUDOperations(Context context) {
+    public RemoteDBCRUDOperations() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(WEB_API_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

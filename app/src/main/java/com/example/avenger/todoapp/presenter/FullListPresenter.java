@@ -13,7 +13,7 @@ public class FullListPresenter {
 
     private FullListView fullListView;
     private static ICRUDOperationsAsync crudOperations;
-    private ArrayList<Todo> todos = new ArrayList<>();
+    private final ArrayList<Todo> todos = new ArrayList<>();
 
     public FullListPresenter(FullListView fullListView, DBApplication application) {
         this.fullListView = fullListView;
@@ -46,9 +46,7 @@ public class FullListPresenter {
     }
 
     public void updateTodo(Todo todo) {
-        crudOperations.updateToDo(todo.getId(), todo, result -> {
-            readAllToDosForChanges();
-        });
+        crudOperations.updateToDo(todo.getId(), todo, result -> readAllToDosForChanges());
     }
 
     public void updateTodoWithIDInList(long id) {

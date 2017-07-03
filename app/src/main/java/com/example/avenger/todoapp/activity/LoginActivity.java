@@ -28,8 +28,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     private EditText email;
     private EditText password;
     private LoginPresenter presenter;
-
-    private Handler handler = new Handler();
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
 
@@ -72,11 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
                 progressDialog.dismiss();
                 if(aBoolean) {
                     progressBar = (ProgressBar) findViewById(R.id.loginProgress);
-                    findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            presenter.validateCredentials(email.getText().toString(), password.getText().toString());
-                        }
-                    });
+                    findViewById(R.id.loginButton).setOnClickListener(v -> presenter.validateCredentials(email.getText().toString(), password.getText().toString()));
 
                     ((DBApplication)getApplication()).setWebApplicationAvailable(true);
                 } else {
@@ -85,32 +79,14 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
                     alertDialog.setTitle("Warning");
                     alertDialog.setMessage("WebApplication not available. Locale database will be used!");
                     alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            navigateToHome();
-                        }
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", (dialog, which) -> {
+                        dialog.dismiss();
+                        navigateToHome();
                     });
                     alertDialog.show();
                 }
             }
         }.execute();
-
-
-
-
-
-
-
-
-
-
-
-    }
-
-    private void startCheckingForConnectivity() {
-        // check internet connection and webApplication availability
-
     }
 
     @Override
@@ -142,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         finish();
     }
 
-    private TextWatcher textWatcher = new TextWatcher() {
+    private final TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }

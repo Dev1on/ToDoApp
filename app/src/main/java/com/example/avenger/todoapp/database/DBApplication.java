@@ -1,7 +1,6 @@
 package com.example.avenger.todoapp.database;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.avenger.todoapp.model.Todo;
@@ -11,14 +10,9 @@ import java.util.List;
 
 public class DBApplication extends Application {
 
-    private static String logger = DBApplication.class.getSimpleName();
+    private static final String logger = DBApplication.class.getSimpleName();
 
     private ICRUDOperationsAsync crudOperations;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
 
     public ICRUDOperationsAsync getCrudOperations() {
         return crudOperations;

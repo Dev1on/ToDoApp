@@ -8,7 +8,7 @@
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context="com.example.avenger.todoapp.activity.DetailActivity"
         >
@@ -43,7 +43,7 @@
             android:hint="Description"
             android:inputType="textCapSentences|textMultiLine"
             android:maxLength="2000"
-            android:maxLines="4" />/>
+            android:maxLines="4" />
         <EditText
             android:id="@+id/dateTextDetail"
             android:layout_width="match_parent"
@@ -91,8 +91,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
             <EditText
                 android:id="@+id/locationTextDetail"
                 android:layout_width="wrap_content"
@@ -100,14 +99,14 @@
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:text="Location Name"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:hint="Location Name"/>
             <ImageButton
                 android:id="@+id/action_delete_location"
                 android:layout_width="wrap_content"
                 android:layout_height="@android:dimen/app_icon_size"
                 android:src="@drawable/icon_trash_bin_48dp"
-                android:background="@drawable/icon_trash_bin_48dp"
-                android:contentDescription=""/>
+                android:background="@drawable/icon_trash_bin_48dp"/>
 
         </LinearLayout>
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"

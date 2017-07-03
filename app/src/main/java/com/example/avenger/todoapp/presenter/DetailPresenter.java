@@ -13,12 +13,10 @@ import com.example.avenger.todoapp.view.DetailView;
 
 import java.util.ArrayList;
 
-import static android.R.attr.id;
-
 public class DetailPresenter {
 
     private DetailView detailView;
-    private ICRUDOperationsAsync crudOperations;
+    private final ICRUDOperationsAsync crudOperations;
     private Todo todo;
 
     public DetailPresenter(DetailView detailView, DBApplication application) {
@@ -57,12 +55,10 @@ public class DetailPresenter {
     }
 
     public void deleteToDo(long id) {
-        crudOperations.deleteToDo(id, result -> {
-            Log.d("DetailPresenter", "Removed todo with ID: " + id);
-        });
+        crudOperations.deleteToDo(id, result -> Log.d("DetailPresenter", "Removed todo with ID: " + id));
     }
 
-    public void setTodo(Todo todo) {
+    private void setTodo(Todo todo) {
         this.todo = todo;
     }
 
@@ -74,13 +70,16 @@ public class DetailPresenter {
         Cursor cursor = resolver.query(data, null, null,null,null);
         cursor.moveToNext();
 
-        return cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+        String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+        cursor.close();
+
+        return contactName;
     }
 
     public ArrayList<String> getListOfPhoneNumbersForContact(ContentResolver resolver, String contact) {
         Cursor contactsCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null,null,null);
 
-        ArrayList<String> allPhoneNumbersForContact = new ArrayList<String>();
+        ArrayList<String> allPhoneNumbersForContact = new ArrayList<>();
         if(contactsCursor.moveToFirst())
         {
             do
@@ -102,13 +101,14 @@ public class DetailPresenter {
                 }
             } while (contactsCursor.moveToNext()) ;
         }
+        contactsCursor.close();
         return allPhoneNumbersForContact;
     }
 
     public ArrayList<String> getListOfEmailsForContact(ContentResolver resolver, String contact) {
         Cursor contactsCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null,null,null);
 
-        ArrayList<String> allPhoneNumbersForContact = new ArrayList<String>();
+        ArrayList<String> allPhoneNumbersForContact = new ArrayList<>();
         if(contactsCursor.moveToFirst())
         {
             do
@@ -130,7 +130,7 @@ public class DetailPresenter {
                 }
             } while (contactsCursor.moveToNext()) ;
         }
-
+        contactsCursor.close();
         return allPhoneNumbersForContact;
     }
 }
