@@ -54,7 +54,7 @@ public class TabContainerActivity extends AppCompatActivity implements FullListA
     @Override
     public void updateTodosList(ArrayList<Todo> todos) {
         FullListActivity listActivity = (FullListActivity) mSectionsPagerAdapter.getItem(0);
-        listActivity.updateMapView(todos);
+        listActivity.updateViewAfterChangesInMap(todos);
     }
 
 
