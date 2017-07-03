@@ -1,5 +1,6 @@
 package com.example.avenger.todoapp.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -135,5 +136,24 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
 
     public interface TodosUpdatedInMap {
         void updateTodosList(ArrayList<Todo> todos);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Activity parentActivity;
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        if (context instanceof Activity){
+            parentActivity = (Activity) context;
+            try {
+                callback = (FullListMapActivity.TodosUpdatedInMap) parentActivity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(parentActivity.toString()
+                        + " must implement TodosUpdatedInMap");
+            }
+        }
     }
 }

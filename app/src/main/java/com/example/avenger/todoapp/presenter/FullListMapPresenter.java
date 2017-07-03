@@ -44,12 +44,6 @@ public class FullListMapPresenter {
         });
     }
 
-    public void updateTodo(Todo todo) {
-        crudOperations.updateToDo(todo.getId(), todo, result -> {
-            readAllToDosForChanges();
-        });
-    }
-
     public void updateTodoWithIDInList(long id) {
         crudOperations.readToDo(id, result -> {
             for(Todo todoInList : getTodos()) {
