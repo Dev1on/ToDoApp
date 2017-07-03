@@ -12,14 +12,9 @@ import static com.example.avenger.todoapp.model.AppSettingsConstants.CREATE_TEST
 
 public class DBApplication extends Application {
 
-    private static String logger = DBApplication.class.getSimpleName();
+    private static final String logger = DBApplication.class.getSimpleName();
 
     private ICRUDOperationsAsync crudOperations;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
 
     public ICRUDOperationsAsync getCrudOperations() {
         return crudOperations;

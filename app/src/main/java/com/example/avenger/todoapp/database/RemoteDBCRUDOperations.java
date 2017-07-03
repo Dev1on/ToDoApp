@@ -1,6 +1,5 @@
 package com.example.avenger.todoapp.database;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -23,11 +22,12 @@ import static com.example.avenger.todoapp.model.AppSettingsConstants.WEB_APPLICA
 
 public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
 
-    protected static String logger = RemoteDBCRUDOperations.class.getSimpleName();
+    private static String WEB_API_BASE_URL = "http:/192.168.43.95:8080/";
+    private static final String logger = RemoteDBCRUDOperations.class.getSimpleName();
 
-    private ICRUDOperationsWebAPI webAPI;
+    private final ICRUDOperationsWebAPI webAPI;
 
-    public RemoteDBCRUDOperations(Context context) {
+    public RemoteDBCRUDOperations() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(WEB_APPLICATION_URL)
                 .addConverterFactory(GsonConverterFactory.create())

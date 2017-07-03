@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class TabContainerActivity extends AppCompatActivity implements FullListActivity.TodosUpdatedInList, FullListMapActivity.TodosUpdatedInMap {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +35,11 @@ public class TabContainerActivity extends AppCompatActivity implements FullListA
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), fullListActivity, fullListMapActivity);
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     }
 
     @Override
@@ -60,8 +57,8 @@ public class TabContainerActivity extends AppCompatActivity implements FullListA
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        private FullListActivity fullListActivity;
-        private FullListMapActivity fullListMapActivity;
+        private final FullListActivity fullListActivity;
+        private final FullListMapActivity fullListMapActivity;
 
         public SectionsPagerAdapter(FragmentManager fm, FullListActivity fullListActivity, FullListMapActivity fullListMapActivity) {
             super(fm);
@@ -73,11 +70,9 @@ public class TabContainerActivity extends AppCompatActivity implements FullListA
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    FullListActivity tab1 = fullListActivity;
-                    return tab1;
+                    return fullListActivity;
                 case 1:
-                    FullListMapActivity tab2 = fullListMapActivity;
-                    return tab2;
+                    return fullListMapActivity;
             }
             return null;
         }

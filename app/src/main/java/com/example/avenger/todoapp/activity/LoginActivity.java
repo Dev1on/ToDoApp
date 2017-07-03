@@ -28,8 +28,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     private EditText email;
     private EditText password;
     private LoginPresenter presenter;
-
-    private Handler handler = new Handler();
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
 
@@ -118,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         finish();
     }
 
-    private TextWatcher textWatcher = new TextWatcher() {
+    private final TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }

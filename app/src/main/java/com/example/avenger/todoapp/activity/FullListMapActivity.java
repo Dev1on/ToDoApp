@@ -92,27 +92,24 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
 
     @Override
     public void fillWithTodos(ArrayList<Todo> todos) {
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                mMap = googleMap;
-                mMap.clear();
-                Log.i("onMapReady", "beforeTODOS");
-                for (Todo todo : todos) {
-                    Log.i("onMapReady", "markerAdded");
-                    Todo.Location location = todo.getLocation();
-                    if(location != null) {
-                        LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
-                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                            @Override
-                            public boolean onMarkerClick(Marker marker) {
-                                long todoId = (long) marker.getTag();
-                                startDetail(todoId);
-                                return false;
-                            }
-                        });
-                    }
+        mMapView.getMapAsync(googleMap -> {
+            mMap = googleMap;
+            mMap.clear();
+            Log.i("onMapReady", "beforeTODOS");
+            for (Todo todo : todos) {
+                Log.i("onMapReady", "markerAdded");
+                Todo.Location location = todo.getLocation();
+                if(location != null) {
+                    LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            long todoId = (long) marker.getTag();
+                            startDetail(todoId);
+                            return false;
+                        }
+                    });
                 }
             }
         });
@@ -156,5 +153,11 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
                         + " must implement TodosUpdatedInMap");
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.onDestroy();
+        super.onDestroy();
     }
 }

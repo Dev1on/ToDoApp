@@ -157,7 +157,7 @@ public class FullListActivity extends Fragment implements FullListView, View.OnC
         }
     }
 
-    public void setSortOrder(Comparator sortOrder) {
+    private void setSortOrder(Comparator sortOrder) {
         this.sortOrder = sortOrder;
     }
 

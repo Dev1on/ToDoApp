@@ -19,22 +19,21 @@ import com.example.avenger.todoapp.view.FullListView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
-import static com.example.avenger.todoapp.R.color.todo;
 
 public class FullListAdapter extends ArrayAdapter<Todo> {
 
-    private ArrayList<Todo> todos = new ArrayList<>();
+    private final ArrayList<Todo> todos = new ArrayList<>();
     private static FullListView fullListView;
 
-    public static final String HH_MM = "HH:mm";
-    public static final String DD_MM_YYYY = "dd.MM.yyyy";
+    private static final String HH_MM = "HH:mm";
+    private static final String DD_MM_YYYY = "dd.MM.yyyy";
 
     public FullListAdapter(Context context, int resource, ArrayList<Todo> todos, FullListView fullListView) {
         super(context,resource,todos);
         this.todos.addAll(todos);
-        this.fullListView = fullListView;
+        FullListAdapter.fullListView = fullListView;
     }
 
     public static class ViewHolder {
@@ -47,8 +46,9 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         public TextView time;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(int position, View view, @NonNull ViewGroup parent) {
         // get the data item for this position
         Todo todo = getItem(position);
         // check if existing view is being reused, otherwise inflate the view
@@ -73,8 +73,8 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         }
 
         // populate the data from the data object via the viewHolder
-        DateFormat fullDateFormatter = new SimpleDateFormat(DD_MM_YYYY);
-        DateFormat timeFormatter = new SimpleDateFormat(HH_MM);
+        DateFormat fullDateFormatter = new SimpleDateFormat(DD_MM_YYYY, Locale.GERMANY);
+        DateFormat timeFormatter = new SimpleDateFormat(HH_MM, Locale.GERMANY);
         long dbTime = todo.getExpiry();
 
         Log.d("adapter","Get view with todo..." + todo.getId());
@@ -89,25 +89,14 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         viewHolder.favourite.setChecked(todo.isFavourite());
 
         // add event listener
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fullListView.startDetail(v, viewHolder.id);
-            }
+        view.setOnClickListener(v -> fullListView.startDetail(v, viewHolder.id));
+        viewHolder.done.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            todo.setDone(isChecked);
+            fullListView.toggleDone(todo);
         });
-        viewHolder.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                todo.setDone(isChecked);
-                fullListView.toggleDone(todo);
-            }
-        });
-        viewHolder.favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                todo.setFavourite(isChecked);
-                fullListView.toggleFavourite(todo);
-            }
+        viewHolder.favourite.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            todo.setFavourite(isChecked);
+            fullListView.toggleFavourite(todo);
         });
 
         if (todo.getExpiry() < System.currentTimeMillis())
@@ -139,15 +128,9 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
     }
 
     private void resetOnCheckedChanged(ViewHolder viewHolder) {
-        viewHolder.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            }
+        viewHolder.done.setOnCheckedChangeListener((buttonView, isChecked) -> {
         });
-        viewHolder.favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            }
+        viewHolder.favourite.setOnCheckedChangeListener((buttonView, isChecked) -> {
         });
     }
 

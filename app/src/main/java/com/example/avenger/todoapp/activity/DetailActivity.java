@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -54,16 +55,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.example.avenger.todoapp.R.color.todo;
 
 public class DetailActivity extends AppCompatActivity implements DetailView, OnMapReadyCallback {
 
-    public static final String HH_MM = "HH:mm";
-    public static final String DD_MM_YYYY = "dd.MM.yyyy";
-    public static final int PICK_CONTACT_REQ_CODE = 20;
+    private static final String HH_MM = "HH:mm";
+    private static final String DD_MM_YYYY = "dd.MM.yyyy";
+    private static final int PICK_CONTACT_REQ_CODE = 20;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-    public static final int START_MAP_ACTIVITY = 200;
+    private static final int START_MAP_ACTIVITY = 200;
 
     private DetailPresenter presenter;
     private ArrayAdapter<String> adapter;
@@ -77,14 +79,10 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     private EditText locationText;
     private EditText dateText;
     private EditText timeText;
-    private Button addContact;
     private GoogleMap mMap;
     private MarkerOptions marker;
-    private ImageButton deleteLocationButton;
 
     private ProgressDialog progressDialog;
-    private ProgressDialog loadingActivityDialog;
-    private Toolbar toolbar;
     private AlertDialog.Builder alertDialogBuilder;
 
     private boolean createItem = false;
@@ -98,7 +96,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
 
         presenter = new DetailPresenter(DetailActivity.this, ((DBApplication) getApplication()));
         progressDialog = new ProgressDialog(DetailActivity.this);
-        toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
 
         idText = (TextView) findViewById(R.id.idTextDetail);
         nameText = (EditText) findViewById(R.id.nameTextDetail);
@@ -109,8 +107,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         locationText = (EditText) findViewById(R.id.locationTextDetail);
         dateText = (EditText) findViewById(R.id.dateTextDetail);
         timeText = (EditText) findViewById(R.id.timeTextDetail);
-        addContact = (Button) findViewById(R.id.addContactBtn);
-        deleteLocationButton = (ImageButton) findViewById(R.id.action_delete_location);
+        Button addContact = (Button) findViewById(R.id.addContactBtn);
+        ImageButton deleteLocationButton = (ImageButton) findViewById(R.id.action_delete_location);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.detail_map);
@@ -133,22 +131,15 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
             Intent pickContanctIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
             startActivityForResult(pickContanctIntent, PICK_CONTACT_REQ_CODE);
         });
-        listView.setOnTouchListener(new View.OnTouchListener() {
-            // Setting on Touch Listener for handling the touch inside ScrollView
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
+        listView.setOnTouchListener((v, event) -> {
+            // Disallow the touch request for parent scroll on touch of child view
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
         });
-        deleteLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Todo todo = getCurrentTodo();
-                todo.setLocation(null);
-                setTodo(todo);
-            }
+        deleteLocationButton.setOnClickListener(v -> {
+            Todo todo1 = getCurrentTodo();
+            todo1.setLocation(null);
+            setTodo(todo1);
         });
 
     }
@@ -156,7 +147,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     @Override
     public void saveItem() {
         if (isMandatoryMaintained()) {
-            String operation = "";
+            String operation;
 
             if (!createItem) {
                 progressDialog.show();
@@ -201,8 +192,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         nameText.setText(todo.getName());
         descriptionText.setText(todo.getDescription());
 
-        DateFormat fullDateFormatter = new SimpleDateFormat(DD_MM_YYYY);
-        DateFormat timeFormatter = new SimpleDateFormat(HH_MM);
+        DateFormat fullDateFormatter = new SimpleDateFormat(DD_MM_YYYY, Locale.GERMANY);
+        DateFormat timeFormatter = new SimpleDateFormat(HH_MM, Locale.GERMANY);
         long dbTime = todo.getExpiry();
         String showDate = fullDateFormatter.format(dbTime);
         String showTime = timeFormatter.format(dbTime);
@@ -238,7 +229,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         //date
         String dateString = dateText.getText().toString();
         String timeString = timeText.getText().toString();
-        DateFormat formatter = new SimpleDateFormat(DD_MM_YYYY + ":" + HH_MM);
+        DateFormat formatter = new SimpleDateFormat(DD_MM_YYYY + ":" + HH_MM, Locale.GERMANY);
         Date date = null;
         try {
             date = formatter.parse(dateString + ":" + timeString);
@@ -355,13 +346,13 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     }
 
     private void updateDateLabel(Calendar cal) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DD_MM_YYYY);
+        SimpleDateFormat sdf = new SimpleDateFormat(DD_MM_YYYY, Locale.GERMANY);
         dateText.setText(sdf.format(cal.getTime()));
         dateText.setError(null);
     }
 
     private void updateTimeLabel(Calendar cal) {
-        SimpleDateFormat sdf = new SimpleDateFormat(HH_MM);
+        SimpleDateFormat sdf = new SimpleDateFormat(HH_MM, Locale.GERMANY);
         timeText.setText(sdf.format(cal.getTime()));
         timeText.setError(null);
     }
@@ -493,7 +484,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
 
     private void askForPermission(String smsOrMail) {
         // Check the SDK version and whether the permission is already granted or not.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
@@ -507,8 +498,8 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 askForPermission(smsOrEmail);
@@ -558,5 +549,11 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
                 mMap.clear();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.onDestroy();
+        super.onDestroy();
     }
 }

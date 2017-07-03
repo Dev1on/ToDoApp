@@ -12,20 +12,21 @@ import com.example.avenger.todoapp.model.Todo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.example.avenger.todoapp.model.AppSettingsConstants.DELETE_LOCAL_DB;
 
 public class DBCRUDOperations implements ICRUDOperationsAsync {
 
-    protected static String logger = DBCRUDOperations.class.getSimpleName();
+    private static final String logger = DBCRUDOperations.class.getSimpleName();
 
     private static final String DB_NAME = "TODOS";
 
-    private boolean webApplicationAvailable;
+    private final boolean webApplicationAvailable;
     private RemoteDBCRUDOperations remoteDBCRUDOperations;
 
-    private SQLiteDatabase db;
+    private final SQLiteDatabase db;
 
     public DBCRUDOperations(Context context, boolean webApplicationAvailable) {
         this.webApplicationAvailable = webApplicationAvailable;
@@ -45,7 +46,7 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         }
 
         if(webApplicationAvailable) {
-            remoteDBCRUDOperations = new RemoteDBCRUDOperations(context);
+            remoteDBCRUDOperations = new RemoteDBCRUDOperations();
         }
     }
 
@@ -198,30 +199,24 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
     }
 
     public void createItemOnline(Todo todo) {
-        remoteDBCRUDOperations.createToDo(todo, new CallbackFunction<Todo>() {
-            @Override
-            public void process(Todo result) {
-                //do nothing
-            }
+        remoteDBCRUDOperations.createToDo(todo, result -> {
+            //do nothing
         });
     }
 
     public List<Todo> readAllTodosOnline() {
         List<Todo> todoList = new ArrayList<>();
-        remoteDBCRUDOperations.readAllToDos(new CallbackFunction<List<Todo>>() {
-            @Override
-            public void process(List<Todo> result) {
-               for (Todo todo : result) {
-                   createTodoLocal(todo, new CallbackFunction<Todo>() {
-                       @Override
-                       public void process(Todo result) {
-                           Log.d (logger, "Local item created: " + result.getName());
-                           todoList.add(result);
-                       }
-                   });
-               }
+        remoteDBCRUDOperations.readAllToDos(result -> {
+           for (Todo todo : result) {
+               createTodoLocal(todo, new CallbackFunction<Todo>() {
+                   @Override
+                   public void process(Todo result) {
+                       Log.d (logger, "Local item created: " + result.getName());
+                       todoList.add(result);
+                   }
+               });
            }
-        });
+       });
 
         return todoList;
     }
@@ -260,9 +255,7 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         String contactsFromDb = cursor.getString(cursor.getColumnIndex("CONTACTS"));
         if (!contactsFromDb.equals("")) {
             String[] substrings = contactsFromDb.split(";");
-            for (String contact : substrings) {
-                contacts.add(contact);
-            }
+            Collections.addAll(contacts, substrings);
         }
 
         Todo todo = new Todo(name, description);

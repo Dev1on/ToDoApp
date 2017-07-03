@@ -25,9 +25,9 @@ import static com.example.avenger.todoapp.model.AppSettingsConstants.WEB_APPLICA
 public class LoginPresenter {
 
     private LoginView loginView;
-    private Object systemService;
+    private final Object systemService;
     private URL webApplicationURL = null;
-    private LoginWebAPI webAPI;
+    private final LoginWebAPI webAPI;
 
 
     public LoginPresenter(LoginView loginView, Object systemService) {
@@ -100,20 +100,20 @@ public class LoginPresenter {
         }
     }
 
-    public void onSuccess() {
+    private void onSuccess() {
         if(loginView != null) {
             loginView.navigateToHome();
         }
     }
 
-    public void onEmailError() {
+    private void onEmailError() {
         if(loginView != null) {
             loginView.setEmailError();
             loginView.hideProgress();
         }
     }
 
-    public void onPasswordError() {
+    private void onPasswordError() {
         if(loginView != null) {
             loginView.setPasswordError();
             loginView.hideProgress();

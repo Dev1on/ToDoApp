@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -40,7 +39,6 @@ public class DetailMapsActivity extends AppCompatActivity implements
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
     private MarkerOptions marker = null;
-    private Button saveButton;
     private Geocoder coder;
 
     @Override
@@ -52,30 +50,27 @@ public class DetailMapsActivity extends AppCompatActivity implements
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
 
-        saveButton = (Button) findViewById(R.id.maps_action_save);
+        Button saveButton = (Button) findViewById(R.id.maps_action_save);
         coder = new Geocoder(DetailMapsActivity.this);
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != marker) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(DetailMapsActivity.this);
-                    builder.setMessage("Do you want to select " + getLocation().getName() + "?")
-                            .setCancelable(true)
-                            .setPositiveButton("Yes", (dialog, id) -> {
-                                Intent returnIntent = new Intent();
-                                returnIntent.putExtra("location", getLocation());
-                                setResult(RESULT_OK, returnIntent);
-                                finish();
-                            })
-                            .setNegativeButton("No", (dialog, id) -> {
-                                //do nothing
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                } else {
-                    Toast.makeText(DetailMapsActivity.this, "No Location selected", Toast.LENGTH_SHORT).show();
-                }
+        saveButton.setOnClickListener(v -> {
+            if (null != marker) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailMapsActivity.this);
+                builder.setMessage("Do you want to select " + getLocation().getName() + "?")
+                        .setCancelable(true)
+                        .setPositiveButton("Yes", (dialog, id) -> {
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("location", getLocation());
+                            setResult(RESULT_OK, returnIntent);
+                            finish();
+                        })
+                        .setNegativeButton("No", (dialog, id) -> {
+                            //do nothing
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                Toast.makeText(DetailMapsActivity.this, "No Location selected", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -174,5 +169,4 @@ public class DetailMapsActivity extends AppCompatActivity implements
 
         return loc;
     }
-
 }

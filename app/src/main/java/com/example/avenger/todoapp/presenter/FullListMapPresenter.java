@@ -12,7 +12,7 @@ public class FullListMapPresenter {
 
     private FullListMapView fullListMapView;
     private static ICRUDOperationsAsync crudOperations;
-    private ArrayList<Todo> todos = new ArrayList<>();
+    private final ArrayList<Todo> todos = new ArrayList<>();
 
     public FullListMapPresenter(FullListMapView fullListMapView, DBApplication application) {
         this.fullListMapView = fullListMapView;
@@ -75,7 +75,7 @@ public class FullListMapPresenter {
         this.todos.addAll(todos);
     }
 
-    public ArrayList<Todo> getTodos() {
+    private ArrayList<Todo> getTodos() {
         return todos;
     }
 

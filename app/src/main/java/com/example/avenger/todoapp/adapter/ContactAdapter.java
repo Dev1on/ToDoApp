@@ -2,11 +2,6 @@ package com.example.avenger.todoapp.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,16 +18,12 @@ import com.example.avenger.todoapp.activity.DetailActivity;
 import com.example.avenger.todoapp.view.DetailView;
 
 import java.util.ArrayList;
-
-import static android.R.attr.data;
-import static android.R.attr.phoneNumber;
-import static android.R.id.message;
-import static android.support.v4.content.ContextCompat.startActivity;
+import java.util.stream.Collectors;
 
 public class ContactAdapter extends ArrayAdapter<String> {
 
     private ArrayList<String> contacts;
-    private DetailView detailView;
+    private final DetailView detailView;
 
     public ContactAdapter(@NonNull Context context, @LayoutRes int resource, ArrayList<String> contacts, DetailView detailView) {
         super(context, resource, contacts);
@@ -93,11 +84,7 @@ public class ContactAdapter extends ArrayAdapter<String> {
         });
 
         viewHolder.actionDelete.setOnClickListener(v -> {
-            ArrayList<String> newContacts = new ArrayList<String>();
-            for (String con : contacts) {
-                if (!con.equals(contact))
-                    newContacts.add(con);
-            }
+            ArrayList<String> newContacts = contacts.stream().filter(con -> !con.equals(contact)).collect(Collectors.toCollection(ArrayList::new));
             contacts = newContacts;
             Log.d("Contact deleted", "remaining: " + contacts);
             ((DetailActivity)detailView).refreshContactList(contacts);
