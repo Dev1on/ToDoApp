@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.util.Comparator.comparing;
+
 public class Todo implements Serializable {
 
     private static final long serialVersionUID = -6410064189686738560L;
@@ -193,9 +195,9 @@ public class Todo implements Serializable {
         }
     }
 
-    public static Comparator<Todo> doneComparator = Comparator.comparing(Todo::isDone);
+    public static Comparator<Todo> doneComparator = comparing(Todo::isDone);
 
-    public static Comparator<Todo> dateImportanceComparator = Comparator.comparing(Todo::isDone).thenComparing(Todo::getExpiry).thenComparing(Todo::isFavourite);
+    public static Comparator<Todo> dateImportanceComparator = comparing(Todo::isDone).thenComparing(Todo::getExpiry).thenComparing(comparing(Todo::isFavourite).reversed());
 
-    public static Comparator<Todo> importanceDateComparator = Comparator.comparing(Todo::isDone).thenComparing(Todo::isFavourite).thenComparing(Todo::getExpiry);
+    public static Comparator<Todo> importanceDateComparator = comparing(Todo::isDone).thenComparing(comparing(Todo::isFavourite).reversed()).thenComparing(Todo::getExpiry);
 }
