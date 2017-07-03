@@ -53,52 +53,7 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
             e.printStackTrace();
         }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                mMap = googleMap;
-                Log.i("onMapReady", "beforeTODOS");
-                for (Todo todo : todos) {
-                    Log.i("onMapReady", "markerAdded");
-                    Todo.Location location = todo.getLocation();
-                    if(location != null) {
-                        LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
-                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                            @Override
-                            public boolean onMarkerClick(Marker marker) {
-                                long todoId = (long) marker.getTag();
-                                startDetail(todoId);
-                                return false;
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
         return rootView;
-    }
-
-    @Override
-    public void updateView(ArrayList<Todo> todos) {
-        mMap.clear();
-        for (Todo todo : todos) {
-            Log.i("onMapReady", "markerAdded");
-            Todo.Location location = todo.getLocation();
-            if(location != null) {
-                LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
-                mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
-                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        long todoId = (long) marker.getTag();
-                        startDetail(todoId);
-                        return false;
-                    }
-                });
-            }
-        }
     }
 
     @Override
@@ -135,8 +90,33 @@ public class FullListMapActivity extends Fragment implements FullListMapView, Vi
     }
 
     @Override
-    public void setTodos(ArrayList<Todo> todos) {
+    public void fillWithTodos(ArrayList<Todo> todos) {
         this.todos = todos;
+
+        mMapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mMap = googleMap;
+                mMap.clear();
+                Log.i("onMapReady", "beforeTODOS");
+                for (Todo todo : todos) {
+                    Log.i("onMapReady", "markerAdded");
+                    Todo.Location location = todo.getLocation();
+                    if(location != null) {
+                        LatLng latLng = new LatLng(location.getLatlng().getLat(), location.getLatlng().getLng());
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(location.getName())).setTag(todo.getId());
+                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker marker) {
+                                long todoId = (long) marker.getTag();
+                                startDetail(todoId);
+                                return false;
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     @Override

@@ -8,12 +8,10 @@ import java.util.ArrayList;
 
 public interface FullListMapView {
 
-    void updateView(ArrayList<Todo> todos);
-
     void displayTodosNotFound();
 
     void startDetail(long id);
 
-    void setTodos(ArrayList<Todo> todos);
+    void fillWithTodos(ArrayList<Todo> todos);
 
 }

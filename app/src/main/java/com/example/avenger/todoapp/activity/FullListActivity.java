@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +21,7 @@ import com.example.avenger.todoapp.R;
 import com.example.avenger.todoapp.adapter.FullListAdapter;
 import com.example.avenger.todoapp.database.DBApplication;
 import com.example.avenger.todoapp.model.Todo;
+import com.example.avenger.todoapp.presenter.FullListMapPresenter;
 import com.example.avenger.todoapp.presenter.FullListPresenter;
 import com.example.avenger.todoapp.view.FullListView;
 
@@ -28,6 +31,7 @@ import java.util.Comparator;
 public class FullListActivity extends Fragment implements FullListView, View.OnClickListener {
 
     private FullListPresenter presenter;
+    private FullListMapPresenter mapPresenter;
     private ViewGroup listView;
     private ArrayAdapter<Todo> adapter;
     private Comparator sortOrder = Todo.doneComparator;
@@ -38,6 +42,8 @@ public class FullListActivity extends Fragment implements FullListView, View.OnC
         View rootView = inflater.inflate(R.layout.full_list_activity, container, false);
 
         listView = (ViewGroup) rootView.findViewById(R.id.list_view_todo_list);
+
+        setHasOptionsMenu(true);
 
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(this);
@@ -97,12 +103,15 @@ public class FullListActivity extends Fragment implements FullListView, View.OnC
         switch (operation) {
             case "create":
                 presenter.readAllToDosForChanges();
+                mapPresenter.readAllToDosForChanges();
                 break;
             case "update":
                 presenter.updateTodoWithIDInList(todoID);
+                mapPresenter.updateTodoWithIDInList(todoID);
                 break;
             case "delete":
                 presenter.removeTodoWithIDFromList(todoID);
+                mapPresenter.removeTodoWithIDFromList(todoID);
                 break;
             case "returned":
                 break;
