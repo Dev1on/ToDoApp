@@ -4,6 +4,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 
 import com.example.avenger.todoapp.model.User;
 import com.example.avenger.todoapp.view.LoginView;
@@ -19,9 +20,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.PUT;
 
-public class LoginPresenter {
+import static com.example.avenger.todoapp.model.AppSettingsConstants.WEB_APPLICATION_URL;
 
-    private static String WEB_APPLICATION_URL = "http:/192.168.43.95:8080/";
+public class LoginPresenter {
 
     private LoginView loginView;
     private Object systemService;
@@ -83,7 +84,7 @@ public class LoginPresenter {
     }
 
     private void login(String email, String password) {
-        if(TextUtils.isEmpty(email)) {
+        if(TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             onEmailError();
             return;
         }

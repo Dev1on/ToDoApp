@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.value;
-import static android.os.Build.VERSION_CODES.M;
-import static com.example.avenger.todoapp.R.color.todo;
+import static com.example.avenger.todoapp.model.AppSettingsConstants.DELETE_LOCAL_DB;
 
 public class DBCRUDOperations implements ICRUDOperationsAsync {
 
@@ -33,16 +31,18 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         this.webApplicationAvailable = webApplicationAvailable;
 
         db = context.openOrCreateDatabase("mydb.sqlite", Context.MODE_PRIVATE, null);
-        //Drop all tables for the first time and set db version to 0, to initialize the db
-        db.setVersion(0);
-        db.execSQL("DROP TABLE " + DB_NAME);
+        if (DELETE_LOCAL_DB) {
+            db.setVersion(0);
+            db.execSQL("DROP TABLE " + DB_NAME);
+        }
 
         if (db.getVersion() == 0) {
             db.setVersion(1);
             db.execSQL("CREATE TABLE " + DB_NAME + " (ID INTEGER PRIMARY KEY, NAME TEXT, DESCRIPTION TEXT, EXPIRY INTEGER, DONE INTEGER, FAVOURITE INTEGER, CONTACTS TEXT ,LAENGENGRAD TEXT, BREITENGRAD TEXT, LOCATIONNAME TEXT)");
         }
-        // (un)comment to keep todos in database
-        db.execSQL("DELETE FROM " + DB_NAME);
+        if (DELETE_LOCAL_DB) {
+            db.execSQL("DELETE FROM " + DB_NAME);
+        }
 
         if(webApplicationAvailable) {
             remoteDBCRUDOperations = new RemoteDBCRUDOperations(context);

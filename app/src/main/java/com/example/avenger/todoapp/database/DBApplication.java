@@ -1,13 +1,14 @@
 package com.example.avenger.todoapp.database;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.avenger.todoapp.model.Todo;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.avenger.todoapp.model.AppSettingsConstants.CREATE_TEST_DATA_LOCAL_DB;
 
 public class DBApplication extends Application {
 
@@ -26,8 +27,10 @@ public class DBApplication extends Application {
 
     public void setWebApplicationAvailable(boolean available) {
         crudOperations = new DBCRUDOperations(getApplicationContext(), available);
-        // (un)comment for local test data
-        createLocalTestData(crudOperations);
+
+        if (CREATE_TEST_DATA_LOCAL_DB) {
+            createLocalTestData(crudOperations);
+        }
 
         if (available) {
             final List<Todo> localTodos = new ArrayList<>();

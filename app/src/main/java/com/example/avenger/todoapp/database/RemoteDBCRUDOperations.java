@@ -19,16 +19,17 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
+import static com.example.avenger.todoapp.model.AppSettingsConstants.WEB_APPLICATION_URL;
+
 public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
 
-    private static String WEB_API_BASE_URL = "http:/192.168.43.95:8080/";
     protected static String logger = RemoteDBCRUDOperations.class.getSimpleName();
 
     private ICRUDOperationsWebAPI webAPI;
 
     public RemoteDBCRUDOperations(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(WEB_API_BASE_URL)
+                .baseUrl(WEB_APPLICATION_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webAPI = retrofit.create(ICRUDOperationsWebAPI.class);
@@ -40,7 +41,6 @@ public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
             @Override
             protected Todo doInBackground(Todo... params) {
                 try {
-                    Log.d("RemoteCRUD","Jo angelegt.");
                     return webAPI.createToDoItem(todo).execute().body();
                 } catch (IOException e) {
                     Log.d(logger, "Item not created.");
