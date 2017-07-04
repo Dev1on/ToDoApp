@@ -11,4 +11,7 @@ public class AppSettingsConstants {
     public static final int PICK_CONTACT_REQ_CODE = 20;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     public static final int START_MAP_ACTIVITY = 200;
+
+    //Constant for DetailMap
+    public static final int PERMISSION_REQUEST_LOCATION = 101;
 }
