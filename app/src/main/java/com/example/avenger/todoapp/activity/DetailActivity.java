@@ -55,7 +55,7 @@ import static com.example.avenger.todoapp.model.AppSettingsConstants.DD_MM_YYYY;
 import static com.example.avenger.todoapp.model.AppSettingsConstants.HH_MM;
 import static com.example.avenger.todoapp.model.AppSettingsConstants.PERMISSIONS_REQUEST_READ_CONTACTS;
 import static com.example.avenger.todoapp.model.AppSettingsConstants.PICK_CONTACT_REQ_CODE;
-import static com.example.avenger.todoapp.model.AppSettingsConstants.START_MAP_ACTIVITY;
+import static com.example.avenger.todoapp.model.AppSettingsConstants.START_MAP_ACTIVITY_REQ_CODE;
 
 public class DetailActivity extends AppCompatActivity implements DetailView, OnMapReadyCallback {
 
@@ -393,7 +393,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_CONTACT_REQ_CODE && resultCode == RESULT_OK) {
             processSelectedContact(data.getData());
-        } else if (requestCode == START_MAP_ACTIVITY && resultCode == RESULT_OK) {
+        } else if (requestCode == START_MAP_ACTIVITY_REQ_CODE && resultCode == RESULT_OK) {
             processSelectedLocation(data.getSerializableExtra("location"));
         }
     }
@@ -512,7 +512,7 @@ public class DetailActivity extends AppCompatActivity implements DetailView, OnM
         if (marker != null) {
             selectNewLocationActivity.putExtra("location", getCurrentTodo().getLocation());
         }
-        startActivityForResult(selectNewLocationActivity, START_MAP_ACTIVITY);
+        startActivityForResult(selectNewLocationActivity, START_MAP_ACTIVITY_REQ_CODE);
     }
 
     private void setMapLocation(Todo todo) {

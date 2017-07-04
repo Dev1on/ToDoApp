@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 
 import static com.example.avenger.todoapp.R.id.map;
-import static com.example.avenger.todoapp.model.AppSettingsConstants.PERMISSION_REQUEST_LOCATION;
+import static com.example.avenger.todoapp.model.AppSettingsConstants.PERMISSIONS_REQUEST_LOCATION;
 import static com.example.avenger.todoapp.model.Todo.Location;
 
 public class DetailMapsActivity extends AppCompatActivity implements
@@ -112,7 +112,7 @@ public class DetailMapsActivity extends AppCompatActivity implements
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
-            requestPermissions(new String[]{ Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_LOCATION);
+            requestPermissions(new String[]{ Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
@@ -129,11 +129,11 @@ public class DetailMapsActivity extends AppCompatActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode != PERMISSION_REQUEST_LOCATION) {
+        if (requestCode != PERMISSIONS_REQUEST_LOCATION) {
             return;
         }
 
-        if (requestCode == PERMISSION_REQUEST_LOCATION) {
+        if (requestCode == PERMISSIONS_REQUEST_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 enableMyLocation();
             } else {
