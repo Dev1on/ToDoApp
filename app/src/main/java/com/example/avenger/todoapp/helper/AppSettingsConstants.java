@@ -1,4 +1,4 @@
-package com.example.avenger.todoapp.model;
+package com.example.avenger.todoapp.helper;
 
 public class AppSettingsConstants {
     public static String WEB_APPLICATION_URL = "http://192.168.92.106:8080/";
@@ -14,4 +14,7 @@ public class AppSettingsConstants {
 
     //Constant for DetailMap
     public static final int PERMISSIONS_REQUEST_LOCATION = 101;
+
+    //DBCRUDOperations
+    public static final String DB_NAME = "TODOS";
 }

@@ -18,7 +18,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
-import static com.example.avenger.todoapp.model.AppSettingsConstants.WEB_APPLICATION_URL;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.WEB_APPLICATION_URL;
 
 public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
 

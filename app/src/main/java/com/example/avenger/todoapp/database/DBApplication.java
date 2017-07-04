@@ -8,7 +8,7 @@ import com.example.avenger.todoapp.model.Todo;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.avenger.todoapp.model.AppSettingsConstants.CREATE_TEST_DATA_LOCAL_DB;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.CREATE_TEST_DATA_LOCAL_DB;
 
 public class DBApplication extends Application {
 

@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 
 import static com.example.avenger.todoapp.R.id.map;
-import static com.example.avenger.todoapp.model.AppSettingsConstants.PERMISSIONS_REQUEST_LOCATION;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.PERMISSIONS_REQUEST_LOCATION;
 import static com.example.avenger.todoapp.model.Todo.Location;
 
 public class DetailMapsActivity extends AppCompatActivity implements

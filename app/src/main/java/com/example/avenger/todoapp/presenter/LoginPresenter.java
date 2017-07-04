@@ -20,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.PUT;
 
-import static com.example.avenger.todoapp.model.AppSettingsConstants.WEB_APPLICATION_URL;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.WEB_APPLICATION_URL;
 
 public class LoginPresenter {
 

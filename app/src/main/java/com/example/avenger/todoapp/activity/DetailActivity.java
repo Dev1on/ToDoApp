@@ -51,11 +51,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.example.avenger.todoapp.model.AppSettingsConstants.DD_MM_YYYY;
-import static com.example.avenger.todoapp.model.AppSettingsConstants.HH_MM;
-import static com.example.avenger.todoapp.model.AppSettingsConstants.PERMISSIONS_REQUEST_READ_CONTACTS;
-import static com.example.avenger.todoapp.model.AppSettingsConstants.PICK_CONTACT_REQ_CODE;
-import static com.example.avenger.todoapp.model.AppSettingsConstants.START_MAP_ACTIVITY_REQ_CODE;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.DD_MM_YYYY;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.HH_MM;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.PERMISSIONS_REQUEST_READ_CONTACTS;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.PICK_CONTACT_REQ_CODE;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.START_MAP_ACTIVITY_REQ_CODE;
 
 public class DetailActivity extends AppCompatActivity implements DetailView, OnMapReadyCallback {
 

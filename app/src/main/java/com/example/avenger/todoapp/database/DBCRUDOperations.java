@@ -15,13 +15,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.example.avenger.todoapp.model.AppSettingsConstants.DELETE_LOCAL_DB;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.DB_NAME;
+import static com.example.avenger.todoapp.helper.AppSettingsConstants.DELETE_LOCAL_DB;
 
 public class DBCRUDOperations implements ICRUDOperationsAsync {
 
     private static final String logger = DBCRUDOperations.class.getSimpleName();
 
-    private static final String DB_NAME = "TODOS";
+
 
     private final boolean webApplicationAvailable;
     private RemoteDBCRUDOperations remoteDBCRUDOperations;
