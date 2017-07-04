@@ -189,26 +189,26 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
     }
 
     @Override
-    public void deleteAllTodos() {
+    public void deleteAllToDos() {
         //dont delete local todos
         //maybe new feature in future
     }
 
-    public void deleteAllTodosOnline() {
-            remoteDBCRUDOperations.deleteAllTodos();
+    public void deleteAllToDosOnline() {
+            remoteDBCRUDOperations.deleteAllToDos();
     }
 
-    public void createItemOnline(Todo todo) {
+    public void createToDoOnline(Todo todo) {
         remoteDBCRUDOperations.createToDo(todo, result -> {
             //do nothing
         });
     }
 
-    public List<Todo> readAllTodosOnline() {
+    public List<Todo> readAllToDosOnline() {
         List<Todo> todoList = new ArrayList<>();
         remoteDBCRUDOperations.readAllToDos(result -> {
            for (Todo todo : result) {
-               createTodoLocal(todo, new CallbackFunction<Todo>() {
+               createToDoLocal(todo, new CallbackFunction<Todo>() {
                    @Override
                    public void process(Todo result) {
                        Log.d (logger, "Local item created: " + result.getName());
@@ -221,7 +221,7 @@ public class DBCRUDOperations implements ICRUDOperationsAsync {
         return todoList;
     }
 
-    private void createTodoLocal(Todo todo, CallbackFunction<Todo> callback) {
+    private void createToDoLocal(Todo todo, CallbackFunction<Todo> callback) {
         new AsyncTask<Todo, Void, Todo>() {
             @Override
             protected Todo doInBackground(Todo... params) {

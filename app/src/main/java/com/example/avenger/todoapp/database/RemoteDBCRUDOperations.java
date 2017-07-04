@@ -140,7 +140,7 @@ public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
     }
 
     @Override
-    public void deleteAllTodos() {
+    public void deleteAllToDos() {
         new AsyncTask<Void, Void, Boolean>() {
 
             @Override
