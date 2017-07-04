@@ -22,7 +22,6 @@ import static com.example.avenger.todoapp.model.AppSettingsConstants.WEB_APPLICA
 
 public class RemoteDBCRUDOperations implements ICRUDOperationsAsync {
 
-    private static String WEB_API_BASE_URL = "http:/192.168.43.95:8080/";
     private static final String logger = RemoteDBCRUDOperations.class.getSimpleName();
 
     private final ICRUDOperationsWebAPI webAPI;
