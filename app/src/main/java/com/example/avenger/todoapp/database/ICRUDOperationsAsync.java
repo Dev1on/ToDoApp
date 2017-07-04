@@ -11,7 +11,7 @@ public interface ICRUDOperationsAsync {
     void readToDo(long id, CallbackFunction<Todo> callback);
     void updateToDo(long id, Todo item, CallbackFunction<Todo> callback);
     void deleteToDo(long id, CallbackFunction<Boolean> callback);
-    void deleteAllTodos();
+    void deleteAllToDos();
     // inner Interface for defining callback function
     interface CallbackFunction<T> {
         void process(T result);

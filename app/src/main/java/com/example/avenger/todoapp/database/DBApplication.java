@@ -32,12 +32,12 @@ public class DBApplication extends Application {
             crudOperations.readAllToDos(result -> {
                 localTodos.addAll(result);
                 if (localTodos.size() > 0) {
-                    ((DBCRUDOperations)crudOperations).deleteAllTodosOnline();
+                    ((DBCRUDOperations)crudOperations).deleteAllToDosOnline();
                     for (Todo todo : localTodos) {
-                        ((DBCRUDOperations)crudOperations).createItemOnline(todo);
+                        ((DBCRUDOperations)crudOperations).createToDoOnline(todo);
                     }
                 } else {
-                    List<Todo> remoteTodos = ((DBCRUDOperations)crudOperations).readAllTodosOnline();
+                    List<Todo> remoteTodos = ((DBCRUDOperations)crudOperations).readAllToDosOnline();
                 }
             });
         }
