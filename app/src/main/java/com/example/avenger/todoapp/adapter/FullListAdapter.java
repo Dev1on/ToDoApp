@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.avenger.todoapp.R;
+import com.example.avenger.todoapp.helper.AppSettingsConstants;
 import com.example.avenger.todoapp.model.Todo;
 import com.example.avenger.todoapp.view.FullListView;
 
@@ -25,9 +26,6 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
 
     private final ArrayList<Todo> todos = new ArrayList<>();
     private static FullListView fullListView;
-
-    private static final String HH_MM = "HH:mm";
-    private static final String DD_MM_YYYY = "dd.MM.yyyy";
 
     public FullListAdapter(Context context, int resource, ArrayList<Todo> todos, FullListView fullListView) {
         super(context,resource,todos);
@@ -72,8 +70,8 @@ public class FullListAdapter extends ArrayAdapter<Todo> {
         }
 
         // populate the data from the data object via the viewHolder
-        DateFormat fullDateFormatter = new SimpleDateFormat(DD_MM_YYYY, Locale.GERMANY);
-        DateFormat timeFormatter = new SimpleDateFormat(HH_MM, Locale.GERMANY);
+        DateFormat fullDateFormatter = new SimpleDateFormat(AppSettingsConstants.DD_MM_YYYY, Locale.GERMANY);
+        DateFormat timeFormatter = new SimpleDateFormat(AppSettingsConstants.HH_MM, Locale.GERMANY);
         long dbTime = todo.getExpiry();
 
         Log.d("adapter","Get view with todo..." + todo.getId());
